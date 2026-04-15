@@ -6,3 +6,12 @@ numpy
 torch
 transformers
 requests
+flask
+flask-cors
+gTTS
+kokoro
+piper-tts
+onnxruntime
+num2words
+soundfile
+scipy

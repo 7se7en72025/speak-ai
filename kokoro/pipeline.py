@@ -18,6 +18,13 @@ ALIASES = {
     'pt-br': 'p',
     'ja': 'j',
     'zh': 'z',
+    # Multilingual expansion
+    'ar': 'r',       # Arabic
+    'sw': 's',       # Swahili
+    'gn': 'g',       # Guarani
+    'qu': 'q',       # Quechua
+    'rw': 'w',       # Kinyarwanda
+    'ay': 'y',       # Aymara
 }
 
 LANG_CODES = dict(
@@ -37,6 +44,14 @@ LANG_CODES = dict(
 
     # pip install misaki[zh]
     z='Mandarin Chinese',
+
+    # Multilingual expansion (espeak-ng backed)
+    r='ar',           # Arabic
+    s='sw',           # Swahili
+    g='gn',           # Guarani
+    q='qu',           # Quechua
+    w='rw',           # Kinyarwanda
+    y='ay',           # Aymara
 )
 
 class KPipeline:
