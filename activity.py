@@ -1,4 +1,6 @@
 # Speak.activity
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 # A simple front end to the espeak text-to-speech engine on the XO laptop
 # http://wiki.laptop.org/go/Speak
 #
@@ -226,6 +228,7 @@ class SpeakActivity(activity.Activity):
             self._entry = self._entrycombo.get_child()
             self._entry.set_size_request(-1, style.GRID_CELL_SIZE)
             self._entry_box.pack_start(self._entrycombo, True, True, 0)
+            self._entrycombo.show_all()
         self._entry.set_editable(True)
         self._entry.connect('activate', self._entry_activate_cb)
         self._entry.connect('key-press-event', self._entry_key_press_cb)
@@ -244,8 +247,8 @@ class SpeakActivity(activity.Activity):
             self._box.pack_start(self._entry_box, False, True, 0)
             self._box.pack_start(self.face, True, True, 0)
         else:
-            self._box.pack_start(self.face, True, False, 0)
-            self._box.pack_start(self._entry_box, True, True, 0)
+            self._box.pack_start(self.face, True, True, 0)
+            self._box.pack_start(self._entry_box, False, True, 0)
 
         self.add_events(Gdk.EventMask.POINTER_MOTION_HINT_MASK
                         | Gdk.EventMask.POINTER_MOTION_MASK)
@@ -253,6 +256,24 @@ class SpeakActivity(activity.Activity):
 
         self._box.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         self._box.connect('button_press_event', self._mouse_clicked_cb)
+
+        self._status_bar = Gtk.Label(label="Backend: — | Cache: —")
+        css_provider = Gtk.CssProvider()
+        css_provider.load_from_data(b"""
+            label { 
+                background-color: #222222; 
+                color: #00FF00; 
+                padding: 5px; 
+                font-family: monospace; 
+                font-weight: bold; 
+            }
+        """)
+        context = self._status_bar.get_style_context()
+        context.add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self._box.pack_end(self._status_bar, False, False, 0)
+        
+        speech_engine = speech.get_speech()
+        speech_engine.on_status_change = self._update_status_bar
 
         # desktop
         self._notebook.show()
@@ -314,7 +335,7 @@ class SpeakActivity(activity.Activity):
 
 
         self._kokoro_button = ToolButton('module-language')
-        self._kokoro_button.set_tooltip(_('Choose Kokoro voice:'))
+        self._kokoro_button.set_tooltip(_('Choose language:'))
         self._make_kokoro()
         self._kokoro_button.connect('clicked', self._face_palette_cb)
         toolbox.toolbar.insert(self._kokoro_button, -1)
@@ -370,6 +391,23 @@ class SpeakActivity(activity.Activity):
         if self._face_button.is_expanded():
             return True
         return False
+
+    def _update_status_bar(self, backend_info, cache_info):
+        backend_name, lang = backend_info
+        
+        if cache_info is None:
+            cache_str = "—"
+        elif cache_info[0] == 'HIT':
+            cache_str = f"HIT ({cache_info[1]})"
+        elif cache_info[0] == 'MISS':
+            cache_str = "MISS"
+        else:
+            cache_str = "—"
+            
+        backend_str = f"{backend_name} ({lang})" if lang != '—' else backend_name
+        status_text = f"Backend: {backend_str} | Cache: {cache_str}"
+        
+        GLib.idle_add(self._status_bar.set_text, status_text)
 
     def _configure_cb(self, event=None):
         self._entry.set_size_request(-1, style.GRID_CELL_SIZE)
@@ -546,8 +584,9 @@ class SpeakActivity(activity.Activity):
 
     def _mouse_moved_cb(self, widget, event):
         # make the eyes track the motion of the mouse cursor
-        self.face.look_at()
-        self._chat.look_at()
+        pos = (event.x_root, event.y_root)
+        self.face.look_at(pos=pos)
+        self._chat.look_at(pos=pos)
 
     def _mouse_clicked_cb(self, widget, event):
         pass
@@ -796,92 +835,123 @@ class SpeakActivity(activity.Activity):
         facebar.show_all()
         return facebar
 
+    # Languages available in the voice palette, grouped by which backend handles them.
+    # Kokoro does the heavy lifting for tier 1, Piper/MMS pick up the rest.
+    VOICE_PALETTE = [
+        # Tier 1: Kokoro has native voice embeddings for these
+        ('en', 'English (Bella)', 'af_bella', 'kokoro'),
+        ('hi', 'Hindi (Priya)', 'hf_alpha', 'kokoro'),
+        ('es', 'Spanish (Dora)', 'ef_dora', 'kokoro'),
+        ('fr-fr', 'French (Siwis)', 'ff_siwis', 'kokoro'),
+        ('zh', 'Mandarin (Xiaobei)', 'zf_xiaobei', 'kokoro'),
+        ('pt-br', 'Portuguese BR (Dora)', 'pf_dora', 'kokoro'),
+        ('it', 'Italian (Sara)', 'if_sara', 'kokoro'),
+        ('ja', 'Japanese (Alpha)', 'jf_alpha', 'kokoro'),
+        # Tier 2: Piper ONNX models, decent quality
+        ('ar', 'Arabic (Kareem)', 'af_heart', 'piper'),
+        ('sw', 'Swahili (Lanfrica)', 'af_heart', 'piper'),
+        # Tier 3: MMS covers these but quality is limited
+        ('qu', 'Quechua (Inti)', 'af_heart', 'mms'),
+        ('gn', 'Guarani (Kuarahy)', 'af_heart', 'mms'),
+        ('rw', 'Kinyarwanda (Inzira)', 'af_heart', 'mms'),
+        ('ay', 'Aymara (Wara)', 'af_heart', 'mms'),
+    ]
+
+    TIER_LABELS = {
+        'kokoro': 'NEURAL (KOKORO)',
+        'piper': 'NEURAL (PIPER)',
+        'mms': 'BASIC (MMS-TTS)',
+        'espeak': 'FALLBACK (ESPEAK-NG)',
+    }
+
+    TIER_COLORS = {
+        'kokoro': '#3c8ef0',
+        'piper': '#2caa68',
+        'mms': '#e07030',
+        'espeak': '#888888',
+    }
+
     def _make_kokoro(self):
         self._kokoro_voice_evboxes = {}
+        self._voice_palette_data = {}  # lang_code -> palette entry
         self._kokoro_voice_box = Gtk.VBox()
 
-        # Add heading for DEFAULT VOICES
-        default_heading = Gtk.Label()
-        default_heading.set_markup('<b>DEFAULT VOICES</b>')
-        default_heading.set_justify(Gtk.Justification.CENTER)
-        default_heading.set_alignment(0.5, 0)
-        self._kokoro_voice_box.pack_start(default_heading, False, False, style.DEFAULT_PADDING)
-        default_heading.show()
+        # Group voices by tier for display
+        from collections import OrderedDict
+        tier_groups = OrderedDict()
+        for lang_code, display_name, kokoro_voice, tier in self.VOICE_PALETTE:
+            tier_groups.setdefault(tier, []).append(
+                (lang_code, display_name, kokoro_voice))
+            self._voice_palette_data[lang_code] = (display_name, kokoro_voice, tier)
 
-        # Arrange default voices in 3 columns
-        default_voices = speech.get_speech().get_default_kokoro_voices()
-        current_voice = speech.get_speech().current_kokoro_voice
-        default_vboxes = [Gtk.VBox(), Gtk.VBox(), Gtk.VBox()]
-        count = len(default_voices)
-        for i, voice_name in enumerate(default_voices):
-            label = Gtk.Label()
-            label.set_use_markup(True)
-            label.set_justify(Gtk.Justification.LEFT)
-            label.set_markup('<span size="large">%s</span>' % voice_name)
-            alignment = Gtk.Alignment.new(0, 0, 0, 0)
-            alignment.add(label)
-            label.show()
-            evbox = Gtk.EventBox()
-            self._kokoro_voice_evboxes[voice_name] = evbox
-            evbox.connect('button-press-event', self._kokoro_voice_changed_event_cb, voice_name)
-            if voice_name == current_voice:
-                evbox.modify_bg(0, style.COLOR_BUTTON_GREY.get_gdk_color())
-            evbox.add(alignment)
-            alignment.show()
-            if i < count // 3:
-                default_vboxes[0].pack_start(evbox, True, True, 0)
-            elif i < count // 3 * 2:
-                default_vboxes[1].pack_start(evbox, True, True, 0)
-            else:
-                default_vboxes[2].pack_start(evbox, True, True, 0)
-            evbox.show()
-        default_hbox = Gtk.HBox()
-        default_hbox.pack_start(default_vboxes[0], True, True, style.DEFAULT_PADDING)
-        default_hbox.pack_start(default_vboxes[1], True, True, style.DEFAULT_PADDING)
-        default_hbox.pack_start(default_vboxes[2], True, True, style.DEFAULT_PADDING)
-        self._kokoro_voice_box.pack_start(default_hbox, False, False, style.DEFAULT_PADDING)
-        default_hbox.show_all()
+        # Current selection
+        current_lang = getattr(speech.get_speech(), '_requested_lang_code', None) or 'en'
 
-        # Add heading for Add-on Voices
-        addon_heading = Gtk.Label()
-        addon_heading.set_markup('<b>ADD-ON VOICES</b>')
-        addon_heading.set_justify(Gtk.Justification.CENTER)
-        addon_heading.set_alignment(0.5, 0)
-        self._kokoro_voice_box.pack_start(addon_heading, False, False, style.DEFAULT_PADDING)
-        addon_heading.show()
+        for tier, voices in tier_groups.items():
+            tier_label = self.TIER_LABELS.get(tier, tier.upper())
+            tier_color = self.TIER_COLORS.get(tier, '#cccccc')
 
-        # Arrange add-on voices in 3 columns
-        addon_voices = speech.get_speech().get_addon_kokoro_voices()
-        addon_vboxes = [Gtk.VBox(), Gtk.VBox(), Gtk.VBox()]
-        count = len(addon_voices)
-        for i, voice_name in enumerate(addon_voices):
-            label = Gtk.Label()
-            label.set_use_markup(True)
-            label.set_justify(Gtk.Justification.LEFT)
-            label.set_markup('<span size="large">%s</span>' % voice_name)
-            alignment = Gtk.Alignment.new(0, 0, 0, 0)
-            alignment.add(label)
-            label.show()
-            evbox = Gtk.EventBox()
-            self._kokoro_voice_evboxes[voice_name] = evbox
-            evbox.connect('button-press-event', self._kokoro_voice_changed_event_cb, voice_name)
-            if voice_name == current_voice:
-                evbox.modify_bg(0, style.COLOR_BUTTON_GREY.get_gdk_color())
-            evbox.add(alignment)
-            alignment.show()
-            if i < count // 3:
-                addon_vboxes[0].pack_start(evbox, True, True, 0)
-            elif i < count // 3 * 2:
-                addon_vboxes[1].pack_start(evbox, True, True, 0)
-            else:
-                addon_vboxes[2].pack_start(evbox, True, True, 0)
-            evbox.show()
-        addon_hbox = Gtk.HBox()
-        addon_hbox.pack_start(addon_vboxes[0], True, True, style.DEFAULT_PADDING)
-        addon_hbox.pack_start(addon_vboxes[1], True, True, style.DEFAULT_PADDING)
-        addon_hbox.pack_start(addon_vboxes[2], True, True, style.DEFAULT_PADDING)
-        self._kokoro_voice_box.pack_start(addon_hbox, False, False, style.DEFAULT_PADDING)
-        addon_hbox.show_all()
+            # Tier heading with color coding
+            heading = Gtk.Label()
+            heading.set_markup(
+                '<b><span foreground="%s">%s</span></b>' % (tier_color, tier_label))
+            heading.set_justify(Gtk.Justification.LEFT)
+            heading.set_alignment(0.0, 0.5)
+            self._kokoro_voice_box.pack_start(heading, False, False, 4)
+            heading.show()
+
+            # Separator below heading
+            sep = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
+            self._kokoro_voice_box.pack_start(sep, False, False, 2)
+            sep.show()
+
+            # Voice options in this tier
+            for lang_code, display_name, kokoro_voice in voices:
+                hbox = Gtk.HBox(spacing=8)
+
+                # Language name label
+                name_label = Gtk.Label()
+                # Mark limited (MMS) languages
+                if tier == 'mms':
+                    name_label.set_markup(
+                        '<span size="large">%s</span>  '
+                        '<span size="small" foreground="#aa6600">[limited]</span>' % display_name)
+                else:
+                    name_label.set_markup(
+                        '<span size="large">%s</span>' % display_name)
+                name_label.set_justify(Gtk.Justification.LEFT)
+                name_label.set_alignment(0.0, 0.5)
+                hbox.pack_start(name_label, True, True, 0)
+                name_label.show()
+
+                # Tier badge on the right
+                tier_badge = Gtk.Label()
+                tier_badge.set_markup(
+                    '<span size="small" foreground="%s">%s</span>' % (
+                        tier_color, tier.upper()))
+                tier_badge.set_alignment(1.0, 0.5)
+                hbox.pack_end(tier_badge, False, False, 4)
+                tier_badge.show()
+
+                hbox.show()
+
+                evbox = Gtk.EventBox()
+                self._kokoro_voice_evboxes[lang_code] = evbox
+                evbox.connect('button-press-event',
+                              self._voice_palette_changed_cb, lang_code)
+
+                if lang_code == current_lang:
+                    evbox.modify_bg(0, style.COLOR_BUTTON_GREY.get_gdk_color())
+
+                evbox.add(hbox)
+                evbox.show()
+                self._kokoro_voice_box.pack_start(evbox, False, False, 2)
+
+            # Small spacer between tiers
+            spacer = Gtk.Label()
+            spacer.set_markup('')
+            self._kokoro_voice_box.pack_start(spacer, False, False, 4)
+            spacer.show()
 
         self._kokoro_palette = self._kokoro_button.get_palette()
         self._kokoro_palette.set_content(self._kokoro_voice_box)
@@ -948,69 +1018,47 @@ class SpeakActivity(activity.Activity):
         self._persona_palette.set_content(self._persona_box)
         self._persona_box.show_all()
         
-    def _kokoro_voice_changed_event_cb(self, widget, event, voice_name):
-        # Show info label(Indication of voice changing) upon click
-        info_label = Gtk.Label()
-        info_label.set_markup('<span foreground="blue" size="large">%s</span>' % _('Please wait...'))
-        self._kokoro_voice_box.pack_start(info_label, False, False, style.DEFAULT_PADDING)
-        info_label.show()
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+    def _voice_palette_changed_cb(self, widget, event, lang_code):
+        """User picked a language from the palette. Set the voice and lang code."""
+        logger.debug('voice_palette_changed_cb: lang=%s' % lang_code)
 
-        def async_check_and_update():
-            kokoro_pipeline = speech.get_speech().kokoro_pipeline
-            is_local = False
-            if kokoro_pipeline:
-                if not is_local:
-                    try:
-                        import huggingface_hub
-                        repo_id = kokoro_pipeline.repo_id
-                        message = _('This voice is being downloaded, please wait')
-                        info_label.set_markup('<span foreground="blue" size="large">%s</span>' % message)
-                        voice_path = huggingface_hub.hf_hub_download(
-                            repo_id=repo_id,
-                            filename=f'voices/{voice_name}.pt',
-                            cache_dir=None,
-                            force_download=False,
-                            resume_download=False
-                        )
-                        is_local = os.path.exists(voice_path)
-                    except ImportError:
-                        message = _('Hugging Face Hub is not installed')
-                        info_label.set_markup('<span foreground="red" size="large">%s</span>' % message)
-                    except huggingface_hub.errors.LocalEntryNotFoundError:
-                        message = _("Can't download voice as there's no internet connection")
-                        info_label.set_markup('<span foreground="red" size="large">%s</span>' % message)
+        if lang_code not in self._voice_palette_data:
+            logger.warning('Unknown lang_code in voice palette: %s' % lang_code)
+            return
+
+        display_name, kokoro_voice, tier = self._voice_palette_data[lang_code]
+
+        # update highlight
+        current_lang = getattr(speech.get_speech(), '_requested_lang_code', None) or 'en'
+        if current_lang in self._kokoro_voice_evboxes:
+            self._kokoro_voice_evboxes[current_lang].modify_bg(
+                0, style.COLOR_BLACK.get_gdk_color())
+        self._kokoro_voice_evboxes[lang_code].modify_bg(
+            0, style.COLOR_BUTTON_GREY.get_gdk_color())
+
+        # tell speech.py which language to route to
+        speech_ref = speech.get_speech()
+        speech_ref._requested_lang_code = lang_code
+
+        # set kokoro voice (tier 1 uses it directly, tier 2/3 just need any placeholder)
+        speech_ref.set_kokoro_voice(kokoro_voice)
+
+        # flip text direction for RTL languages
+        if hasattr(self, '_entry') and self._entry is not None:
+            if lang_code.startswith('ar'):
+                self._entry.set_direction(Gtk.TextDirection.RTL)
             else:
-                is_local = True
+                self._entry.set_direction(Gtk.TextDirection.LTR)
 
-            if is_local:
-                message = _('Changing voice, please wait')
-                info_label.set_markup('<span foreground="green" size="large">%s</span>' % message)
-                # Now update UI for voice selection
-                for old_name, evbox in self._kokoro_voice_evboxes.items():
-                    if old_name == speech.get_speech().current_kokoro_voice:
-                        evbox.modify_bg(0, style.COLOR_BLACK.get_gdk_color())
-                self._kokoro_voice_evboxes[voice_name].modify_bg(0, style.COLOR_BUTTON_GREY.get_gdk_color())
+        # 5. Announce the change
+        self.face.say_notification(_('Voice changed to %s') % display_name)
 
-                # Actually set the voice (may trigger download from Hugging Face Hub)
-                speech.get_speech().set_kokoro_voice(voice_name)
-                self.face.say_notification(_('Kokoro voice changed'))
-
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-
-            def _remove_info_label():
-                self._kokoro_voice_box.remove(info_label)
-            GLib.timeout_add(3000, _remove_info_label)
-
-        GLib.idle_add(async_check_and_update)
 
     def _persona_changed_event_cb(self, widget, event, persona_name):
-        """Handle persona selection change"""
+        """Persona changed. Update the voice, route to correct backend, flip RTL if needed."""
         logger.debug('persona_changed_event_cb %s' % persona_name)
 
-        # Update visual selection
+        # Update persona visual selection
         if persona_name != self._current_persona:
             self._persona_evboxes[self._current_persona].modify_bg(
                 0, style.COLOR_BLACK.get_gdk_color())
@@ -1020,50 +1068,86 @@ class SpeakActivity(activity.Activity):
 
         # Set current persona
         self._current_persona = persona_name
+        persona_data = self._personas[persona_name]
+        persona_voice = persona_data.get('voice') or 'af_heart'
+        persona_lang = persona_data.get('lang', None)
 
-        # Get the persona's voice and set it (using Kokoro voices)
-        persona_voice_name = self._personas[persona_name]['voice']
+        # set kokoro voice
+        speech_ref = speech.get_speech()
+        speech_ref.set_kokoro_voice(persona_voice)
 
-        # Update Kokoro voice selection visually
-        current_kokoro_voice = speech.get_speech().current_kokoro_voice
-        if self._kokoro_voice_evboxes.get(persona_voice_name, False):
-            # Clear old Kokoro voice selection
-            if self._kokoro_voice_evboxes.get(current_kokoro_voice, False):
-                self._kokoro_voice_evboxes[current_kokoro_voice].modify_bg(
-                    0, style.COLOR_BLACK.get_gdk_color())
+        # route alt backends to the right language
+        speech_ref._requested_lang_code = persona_lang
 
-            # Highlight new Kokoro voice selection
-            self._kokoro_voice_evboxes[persona_voice_name].modify_bg(
-                0, style.COLOR_BUTTON_GREY.get_gdk_color())
-            
-            # Set the Kokoro voice
-            speech.get_speech().set_kokoro_voice(persona_voice_name)
+        # sync palette highlight with the persona's language
+        if hasattr(self, '_kokoro_voice_evboxes') and hasattr(self, '_voice_palette_data'):
+            # clear all highlights first
+            current_palette_lang = None
+            for lc in self._kokoro_voice_evboxes:
+                if lc in self._kokoro_voice_evboxes:
+                    self._kokoro_voice_evboxes[lc].modify_bg(
+                        0, style.COLOR_BLACK.get_gdk_color())
+                    if persona_lang and lc == persona_lang:
+                        current_palette_lang = lc
+
+            # highlight the matching language
+            if current_palette_lang and current_palette_lang in self._kokoro_voice_evboxes:
+                self._kokoro_voice_evboxes[current_palette_lang].modify_bg(
+                    0, style.COLOR_BUTTON_GREY.get_gdk_color())
+            elif not persona_lang:
+                # no explicit lang means english-family kokoro voice
+                if 'en' in self._kokoro_voice_evboxes:
+                    self._kokoro_voice_evboxes['en'].modify_bg(
+                        0, style.COLOR_BUTTON_GREY.get_gdk_color())
+
+        # RTL for arabic personas
+        if hasattr(self, '_entry') and self._entry is not None:
+            if persona_lang and persona_lang.startswith('ar'):
+                self._entry.set_direction(Gtk.TextDirection.RTL)
+            else:
+                self._entry.set_direction(Gtk.TextDirection.LTR)
 
         self.face.say_notification(_('Persona changed to %s') % persona_name)
+
 
     def _set_persona_voice(self):
         """Set the voice based on the current persona"""
         if not self._current_persona or self._current_persona not in self._personas:
             return
-            
-        persona_voice_name = self._personas[self._current_persona]['voice']
+
+        persona_data = self._personas[self._current_persona]
+        persona_voice_name = persona_data.get('voice') or 'af_heart'
         
+        # Determine explicit language if provided by persona definition
+        requested_lang = persona_data.get('lang', None)
+        speech_ref = speech.get_speech()
+        speech_ref._requested_lang_code = requested_lang
+
+        # Adjust text entry direction for RTL languages like Arabic
+        if hasattr(self, '_entry') and self._entry is not None:
+            from gi.repository import Pango
+            if requested_lang and requested_lang.startswith('ar'):
+                self._entry.set_direction(Gtk.TextDirection.RTL)
+            else:
+                self._entry.set_direction(Gtk.TextDirection.LTR)
+
         # Set the Kokoro voice for the persona
-        if persona_voice_name in speech.get_speech().get_available_kokoro_voices():
-            speech.get_speech().set_kokoro_voice(persona_voice_name)
+        if persona_voice_name in speech_ref.get_available_kokoro_voices():
+            speech_ref.set_kokoro_voice(persona_voice_name)
             logger.debug(f"Set persona voice to Kokoro voice: {persona_voice_name}")
             
             # Update Kokoro voice visual selection if the kokoro bar exists
-            if hasattr(self, '_kokoro_voice_evboxes') and persona_voice_name in self._kokoro_voice_evboxes:
+            if hasattr(self, '_kokoro_voice_evboxes'):
                 # Clear old selection
-                current_kokoro_voice = speech.get_speech().current_kokoro_voice
-                if current_kokoro_voice in self._kokoro_voice_evboxes:
-                    self._kokoro_voice_evboxes[current_kokoro_voice].modify_bg(
+                current_lang = getattr(speech_ref, '_requested_lang_code', None) or 'en'
+                if current_lang in self._kokoro_voice_evboxes:
+                    self._kokoro_voice_evboxes[current_lang].modify_bg(
                         0, style.COLOR_BLACK.get_gdk_color())
                 
-                # Highlight new selection
-                self._kokoro_voice_evboxes[persona_voice_name].modify_bg(
-                    0, style.COLOR_BUTTON_GREY.get_gdk_color())
+                requested_lang = speech_ref._requested_lang_code or 'en'
+                if requested_lang in self._kokoro_voice_evboxes:
+                    self._kokoro_voice_evboxes[requested_lang].modify_bg(
+                        0, style.COLOR_BUTTON_GREY.get_gdk_color())
         else:
             logger.warning(f"Persona voice {persona_voice_name} not found in available Kokoro voices")
 
@@ -1111,7 +1195,7 @@ class SpeakActivity(activity.Activity):
             self._box.pack_start(self.face, True, True, 0)
         else:
             self._box.pack_start(self.face, True, True, 0)
-            self._box.pack_start(self._entry_box, True, True, 0)
+            self._box.pack_start(self._entry_box, False, True, 0)
         self.face.show()
 
         if not cartoon and self._mode == MODE_CHAT:

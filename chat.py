@@ -230,10 +230,10 @@ class View(Gtk.VBox):
 
         return buddy_face
 
-    def look_at(self):
-        self.me.look_at()
+    def look_at(self, pos=None):
+        self.me.look_at(pos=pos)
         for i in list(self._buddies.values()):
-            i.look_at()
+            i.look_at(pos=pos)
 
     def __open_on_journal(self, widget, url):
         '''Ask the journal to display a URL'''

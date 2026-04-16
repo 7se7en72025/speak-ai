@@ -30,6 +30,12 @@ languages = [
     "p",  # Brazilian Portuguese
     "j",  # Japanese
     "z",  # Mandarin Chinese
+    "r",  # Arabic
+    "s",  # Swahili
+    "w",  # Kinyarwanda
+    "g",  # Guarani
+    "q",  # Quechua
+    "y",  # Aymara
 ]
 
 if TYPE_CHECKING:
