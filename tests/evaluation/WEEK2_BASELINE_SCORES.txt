@@ -1,0 +1,49 @@
+Week 2 — Baseline Pronunciation Scores
+========================================
+
+G2P Coverage (espeak-ng / misaki G2P on all 18 sentences per language)
+-----------------------------------------------------------------------
+
+Language         Unique Phonemes   Expected Coverage   G2P Failures
+Spanish (es)     40                7/7                 0
+French (fr)      36                6/6                 0
+Hindi (hi)       41                6/6                 0
+Portuguese BR    48                6/6                 0
+Mandarin (zh)    40                6/6                 0
+
+Expected phoneme coverage:
+- es: ʎ, ɲ, ɾ, ʧ, ɣ, β, ð — all covered
+- fr: ʁ, ø, œ, ə, ɛ, ʒ — all covered
+- hi: ʰ, ʈ, ɟ, ʋ, ː, ɡ — all covered
+- pt-br: ɲ, ɾ, ʃ, ʒ, æ, ʊ — all covered
+- zh: ʂ, ɻ, ɕ, ʨ, ʦ, ↘ — all covered
+
+WAV Generation (Kokoro TTS, 24kHz)
+------------------------------------
+
+Language         Voice        WAVs    Common   Difficult   Child
+Spanish (es)     ef_dora      18/18   10/10    5/5         3/3
+French (fr)      ff_siwis     18/18   10/10    5/5         3/3
+Hindi (hi)       hf_alpha     18/18   10/10    5/5         3/3
+Portuguese BR    pf_dora      18/18   10/10    5/5         3/3
+Mandarin (zh)    zf_xiaoxiao  18/18   10/10    5/5         3/3
+
+TOTAL: 90 WAV files generated, 0 failures
+
+G2P Backends:
+- es, fr, hi, pt-br: espeak-ng (via phonemizer.backend.EspeakBackend)
+- zh: misaki zh (pinyin-based G2P)
+
+TTS Backend:
+- All languages: KModel (language-blind neural network)
+
+Reports produced:
+- tests/evaluation/pronunciation_report.json (per-sentence + per-category stats)
+- tests/evaluation/g2p_coverage_report.json (per-sentence + per-category + expected phoneme coverage)
+- tests/evaluation/g2p_coverage_summary.txt (human-readable)
+- tests/evaluation/WEEK2_BASELINE_SCORES.txt
+
+Scripts:
+- tests/evaluation/common.py (shared utilities, dynamic espeak path)
+- tests/evaluation/test_pronunciation.py (WAV generation with progress %)
+- tests/evaluation/test_g2p_coverage.py (phoneme verification with expected coverage)

@@ -1,0 +1,867 @@
+{
+  "es": {
+    "voice": "ef_dora",
+    "name": "Spanish",
+    "count": 18,
+    "ok": 18,
+    "fail": 0,
+    "by_cat": {
+      "common": {
+        "n": 10,
+        "ok": 10,
+        "fail": 0,
+        "avg": 2.295
+      },
+      "difficult": {
+        "n": 5,
+        "ok": 5,
+        "fail": 0,
+        "avg": 5.205
+      },
+      "child": {
+        "n": 3,
+        "ok": 3,
+        "fail": 0,
+        "avg": 2.867
+      }
+    },
+    "details": [
+      {
+        "i": 1,
+        "cat": "common",
+        "text": "Oye, ¿qué onda?",
+        "phonemes": "ˈoʝe , ¿kˈe ˈonda ?",
+        "dur": 1.375,
+        "wav": "01.wav"
+      },
+      {
+        "i": 2,
+        "cat": "common",
+        "text": "Pásame el agua, porfa.",
+        "phonemes": "pˈasame el ˈaɣwa , pˈoɾfa .",
+        "dur": 1.85,
+        "wav": "02.wav"
+      },
+      {
+        "i": 3,
+        "cat": "common",
+        "text": "No encontré las llaves en ningún lado.",
+        "phonemes": "nˈo ˌenkontɾˈe las ʎˈaβes en niŋɡˈun lˈaðo .",
+        "dur": 2.55,
+        "wav": "03.wav"
+      },
+      {
+        "i": 4,
+        "cat": "common",
+        "text": "¿Ya comiste o todavía no?",
+        "phonemes": "¿ʝˈa komˈiste o tˌoðaβˈia nˈo ?",
+        "dur": 1.975,
+        "wav": "04.wav"
+      },
+      {
+        "i": 5,
+        "cat": "common",
+        "text": "Mi mamá hace el mejor arroz con pollo.",
+        "phonemes": "mi mamˈa ˈaθe el mexˈoɾ arˈoθ kom pˈoʎo .",
+        "dur": 2.6,
+        "wav": "05.wav"
+      },
+      {
+        "i": 6,
+        "cat": "common",
+        "text": "Ayer llovió todo el día y no salí.",
+        "phonemes": "aʝˈeɾ ʎoβjˈo tˈoðo el ðˈia i nˈo salˈi .",
+        "dur": 2.35,
+        "wav": "06.wav"
+      },
+      {
+        "i": 7,
+        "cat": "common",
+        "text": "El perro del vecino no deja de ladrar.",
+        "phonemes": "el pˈero ðel βeθˈino nˈo ðˈexa ðe laðɾˈaɾ .",
+        "dur": 2.55,
+        "wav": "07.wav"
+      },
+      {
+        "i": 8,
+        "cat": "common",
+        "text": "¿Me prestas tu lápiz? Se me olvidó el mío.",
+        "phonemes": "¿me pɾˈestas tu lˈapiθ ? se me ˌolβiðˈo el mˈio .",
+        "dur": 2.7,
+        "wav": "08.wav"
+      },
+      {
+        "i": 9,
+        "cat": "common",
+        "text": "Me cae gordo ese tipo, no sé por qué.",
+        "phonemes": "me kˈae ɣˈoɾðo ˈese tˈipo , nˈo sˈe poɾ kˈe .",
+        "dur": 2.525,
+        "wav": "09.wav"
+      },
+      {
+        "i": 10,
+        "cat": "common",
+        "text": "Vamos a comer tacos esta noche.",
+        "phonemes": "bˈamos a komˈeɾ tˈakos ˈesta nˈoʧe .",
+        "dur": 2.475,
+        "wav": "10.wav"
+      },
+      {
+        "i": 11,
+        "cat": "difficult",
+        "text": "Ayer me encontré con la señora del sexto piso y me contó que su yerno se fue a Chile sin avisarle.",
+        "phonemes": "aʝˈeɾ me ˌenkontɾˈe kon la seɲˈoɾa ðel sˈeksto pˈiso i me kontˈo ke su ʝˈeɾno se fwˈe a ʧˈile sin ˌaβisˈaɾle .",
+        "dur": 6.125,
+        "wav": "11.wav"
+      },
+      {
+        "i": 12,
+        "cat": "difficult",
+        "text": "El doctor me dijo que tengo que comer más verduras y que deje de tomar café tan fuerte.",
+        "phonemes": "el ðoktˈoɾ me ðˈixo ke tˈɛŋɡo ke komˈeɾ mˈas βeɾðˈuɾas i ke ðˈexe ðe tomˈaɾ kafˈe tˈan fwˈeɾte .",
+        "dur": 5.45,
+        "wav": "12.wav"
+      },
+      {
+        "i": 13,
+        "cat": "difficult",
+        "text": "Mi hermano chico quiere jugar con los gatos del vecino pero ellos le tienen miedo.",
+        "phonemes": "mi eɾmˈano ʧˈiko kjˈeɾe xuɣˈaɾ kon los ɣˈatos ðel βeθˈino pˌeɾo ˈeʎos le tjˈenen mjˈeðo .",
+        "dur": 4.825,
+        "wav": "13.wav"
+      },
+      {
+        "i": 14,
+        "cat": "difficult",
+        "text": "La lluvia no para y el río de atrás ya se desbordó, no se puede cruzar por ahí.",
+        "phonemes": "la ʎˈuβja nˈo pˌaɾa i el rˈio ðe atɾˈas ʝˈa se ðˌesβoɾðˈo , nˈo se pwˈeðe kɾuθˈaɾ poɾ aˈi .",
+        "dur": 4.8,
+        "wav": "14.wav"
+      },
+      {
+        "i": 15,
+        "cat": "difficult",
+        "text": "Mi abuela dice que las chispas de la chimenea le recuerdan a su infancia en el pueblo.",
+        "phonemes": "mi aβwˈela ðˈiθe ke las ʧˈispas ðe la ʧˌimenˈea le rekwˈeɾðan a su infˈanθja en el pwˈeβlo .",
+        "dur": 4.825,
+        "wav": "15.wav"
+      },
+      {
+        "i": 16,
+        "cat": "child",
+        "text": "¡Mamá, mira! Hay un gato durmiendo bajo el árbol.",
+        "phonemes": "¡mamˈa , mˈiɾa ! ˈI ˈuŋ ɡˈato ðuɾmjˈɛndo βˌaxo el ˈaɾβol .",
+        "dur": 2.8,
+        "wav": "16.wav"
+      },
+      {
+        "i": 17,
+        "cat": "child",
+        "text": "Quiero ir al parque a jugar con mi prima.",
+        "phonemes": "kjˈeɾo ˈiɾ al pˈaɾke a xuɣˈaɾ kon mi pɾˈima .",
+        "dur": 2.525,
+        "wav": "17.wav"
+      },
+      {
+        "i": 18,
+        "cat": "child",
+        "text": "La rana saltó al agua y se escondió bajo una piedra.",
+        "phonemes": "la rˈana saltˈo al ˈaɣwa i se ˌeskondjˈo βˌaxo ˈuna pjˈeðɾa .",
+        "dur": 3.275,
+        "wav": "18.wav"
+      }
+    ]
+  },
+  "fr": {
+    "voice": "ff_siwis",
+    "name": "French",
+    "count": 18,
+    "ok": 18,
+    "fail": 0,
+    "by_cat": {
+      "common": {
+        "n": 10,
+        "ok": 10,
+        "fail": 0,
+        "avg": 2.515
+      },
+      "difficult": {
+        "n": 5,
+        "ok": 5,
+        "fail": 0,
+        "avg": 5.275
+      },
+      "child": {
+        "n": 3,
+        "ok": 3,
+        "fail": 0,
+        "avg": 3.942
+      }
+    },
+    "details": [
+      {
+        "i": 1,
+        "cat": "common",
+        "text": "Salut, ça va?",
+        "phonemes": "salˈy , sa vˈa ?",
+        "dur": 1.675,
+        "wav": "01.wav"
+      },
+      {
+        "i": 2,
+        "cat": "common",
+        "text": "C'est quoi ce bruit?",
+        "phonemes": "sɛ kwˌa sə bʁyˈi ?",
+        "dur": 1.725,
+        "wav": "02.wav"
+      },
+      {
+        "i": 3,
+        "cat": "common",
+        "text": "J'ai pas dormi de la nuit, j'étais crevé.",
+        "phonemes": "ʒe pa dɔʁmˈi də la nyˈi , ʒetˈɛ kʁəvˈe .",
+        "dur": 2.9,
+        "wav": "03.wav"
+      },
+      {
+        "i": 4,
+        "cat": "common",
+        "text": "Tu m'entends ou quoi?",
+        "phonemes": "ty mɑ̃tˈɑ̃ u kwˈa ?",
+        "dur": 1.675,
+        "wav": "04.wav"
+      },
+      {
+        "i": 5,
+        "cat": "common",
+        "text": "Ma mère fait les meilleures crêpes du monde.",
+        "phonemes": "ma mˈɛʁ fˈɛ le mɛjˈœʁ kʁˈɛp dy mˈɔ̃d .",
+        "dur": 2.6,
+        "wav": "05.wav"
+      },
+      {
+        "i": 6,
+        "cat": "common",
+        "text": "Il a plu toute la journée, j'ai rien pu faire.",
+        "phonemes": "il a plˈy tut la ʒuʁnˈe , ʒe ʁjˌɛ̃ pˈy fˈɛʁ .",
+        "dur": 3.125,
+        "wav": "06.wav"
+      },
+      {
+        "i": 7,
+        "cat": "common",
+        "text": "Le chat du voisin a encore griffé le canapé.",
+        "phonemes": "lə ʃˈa dy vwazˈɛ̃ a ɑ̃kˌɔʁ ɡʁifˈe lə kanapˈe .",
+        "dur": 3.275,
+        "wav": "07.wav"
+      },
+      {
+        "i": 8,
+        "cat": "common",
+        "text": "T'as vu ce film hier soir?",
+        "phonemes": "ta vˈy sə fˈilm jˈɛʁ swˈaʁ ?",
+        "dur": 2.2,
+        "wav": "08.wav"
+      },
+      {
+        "i": 9,
+        "cat": "common",
+        "text": "Je suis allé au marché et j'ai tout oublié.",
+        "phonemes": "ʒə syˌiz alˈe o maʁʃˈe e ʒe tut ubliˈe .",
+        "dur": 2.95,
+        "wav": "09.wav"
+      },
+      {
+        "i": 10,
+        "cat": "common",
+        "text": "Faut qu'on se dépêche, on va être en retard.",
+        "phonemes": "fo kɔ̃ sə depˈɛʃ , ɔ̃ vˈa ˈɛtʁ ɑ̃ ʁətˈaʁ .",
+        "dur": 3.025,
+        "wav": "10.wav"
+      },
+      {
+        "i": 11,
+        "cat": "difficult",
+        "text": "Le médecin m'a dit que je devrais prendre rendez-vous avec le spécialiste du centre hospitalier.",
+        "phonemes": "lə medəsˈɛ̃ ma dˈi kə ʒə dəvʁˈɛ pʁˈɑ̃dʁ ʁɑ̃dˈevu avˌɛk lə spesjalˈist dy sˈɑ̃tʁ ɔspitaljˈe .",
+        "dur": 6.15,
+        "wav": "11.wav"
+      },
+      {
+        "i": 12,
+        "cat": "difficult",
+        "text": "Quand j'étais petit, on allait souvent à la plage en Bretagne, je m'en souviens encore.",
+        "phonemes": "kɑ̃ ʒetˈɛ pətˈi , ɔ̃n alˈɛ suvˈɑ̃ a la plˈaʒ ɑ̃ bʁətˈaɲ , ʒə mɑ̃ suvjˈɛ̃z ɑ̃kˈɔʁ .",
+        "dur": 4.925,
+        "wav": "12.wav"
+      },
+      {
+        "i": 13,
+        "cat": "difficult",
+        "text": "Ma collègue de travail vient de Strasbourg et elle parle aussi alsacien en plus du français.",
+        "phonemes": "ma kɔlˈɛɡ də tʁavˈaj vjˈɛ̃ də stʁazbˈuʁ e ɛl pˈaʁl osˌi alzasjˈɛ̃ ɑ̃ ply dy fʁɑ̃sˈɛ .",
+        "dur": 5.6,
+        "wav": "13.wav"
+      },
+      {
+        "i": 14,
+        "cat": "difficult",
+        "text": "Il faisait un froid de canard et les gens marchaient vite pour rentrer chez eux.",
+        "phonemes": "il fəzˈɛt œ̃ fʁwˈa də kanˈaʁ e le ʒˈɑ̃ maʁʃˈɛ vˈit puʁ ʁɑ̃tʁˈe ʃez ˈø .",
+        "dur": 4.675,
+        "wav": "14.wav"
+      },
+      {
+        "i": 15,
+        "cat": "difficult",
+        "text": "Les étudiants préparent leurs examens à la bibliothèque, c'est le calme total.",
+        "phonemes": "lez etydjˈɑ̃ pʁepˈaʁ lœʁz ɛɡzamˈɛ̃z a la bibliotˈɛk , sɛ lə kˈalm totˈal .",
+        "dur": 5.025,
+        "wav": "15.wav"
+      },
+      {
+        "i": 16,
+        "cat": "child",
+        "text": "Regarde! Le chat fait dodo sur le rebord de la fenêtre.",
+        "phonemes": "ʁəɡˈaʁd ! lə ʃˈa fˈɛ dodˈo syʁ lə ʁəbˈɔʁ də la fənˈɛtʁ .",
+        "dur": 3.825,
+        "wav": "16.wav"
+      },
+      {
+        "i": 17,
+        "cat": "child",
+        "text": "J'ai trouvé un escargot dans le jardin, il bouge tout doucement.",
+        "phonemes": "ʒe tʁuvˈe œ̃n ɛskaʁɡˈo dɑ̃ lə ʒaʁdˈɛ̃ , il bˈuʒ tu dusmˈɑ̃ .",
+        "dur": 4.0,
+        "wav": "17.wav"
+      },
+      {
+        "i": 18,
+        "cat": "child",
+        "text": "Ma poupée elle s'appelle Charlotte et elle a les cheveux tout rouges.",
+        "phonemes": "ma pupˈe ɛl sapˈɛl ʃaʁlˈɔt e ɛl a le ʃəvˈø tu ʁˈuʒ .",
+        "dur": 4.0,
+        "wav": "18.wav"
+      }
+    ]
+  },
+  "hi": {
+    "voice": "hf_alpha",
+    "name": "Hindi",
+    "count": 18,
+    "ok": 18,
+    "fail": 0,
+    "by_cat": {
+      "common": {
+        "n": 10,
+        "ok": 10,
+        "fail": 0,
+        "avg": 3.35
+      },
+      "difficult": {
+        "n": 5,
+        "ok": 5,
+        "fail": 0,
+        "avg": 6.465
+      },
+      "child": {
+        "n": 3,
+        "ok": 3,
+        "fail": 0,
+        "avg": 3.508
+      }
+    },
+    "details": [
+      {
+        "i": 1,
+        "cat": "common",
+        "text": "अरे यार, क्या हाल है?",
+        "phonemes": "ˈʌɾeː jˈaːɾ , kːjaː hˈaːl hɛː ?",
+        "dur": 2.3,
+        "wav": "01.wav"
+      },
+      {
+        "i": 2,
+        "cat": "common",
+        "text": "मुझे पानी दे दो, बहुत प्यास लगी है।",
+        "phonemes": "mˌʊɟʰeː pˈaːni dˈeː dˈoː , bˈʌhʊt pːjˈaːs lˈʌɡi hɛː",
+        "dur": 3.825,
+        "wav": "02.wav"
+      },
+      {
+        "i": 3,
+        "cat": "common",
+        "text": "मेरा फ़ोन कहाँ रखा है?",
+        "phonemes": "mˌeːɾaː fˈoːn kˈʌhã ɾˈʌkʰaː hɛː ?",
+        "dur": 2.5,
+        "wav": "03.wav"
+      },
+      {
+        "i": 4,
+        "cat": "common",
+        "text": "आज स्कूल में क्या हुआ?",
+        "phonemes": "ˈaːɟ skˈuːl mẽː kːjaː hˈʊaː ?",
+        "dur": 2.375,
+        "wav": "04.wav"
+      },
+      {
+        "i": 5,
+        "cat": "common",
+        "text": "मम्मी का बनाया हुआ खाना सबसे अच्छा है।",
+        "phonemes": "mˈʌmmi kaː bənˈaːjaː hˈʊaː kʰˈaːnaː sˈʌbsˌeː ˈʌcʰcʰaː hɛː",
+        "dur": 4.025,
+        "wav": "05.wav"
+      },
+      {
+        "i": 6,
+        "cat": "common",
+        "text": "कल रात बहुत तेज़ बारिश हुई।",
+        "phonemes": "kˈʌl ɾˈaːt bˈʌhʊt tˈeːz bˈaːɾɪʃ hˈʊi",
+        "dur": 3.125,
+        "wav": "06.wav"
+      },
+      {
+        "i": 7,
+        "cat": "common",
+        "text": "पड़ोस वाले अंकल का कुत्ता बहुत शोर करता है।",
+        "phonemes": "pər.ˈoːs ʋˈaːleː ˈʌŋkəl kaː kˈʊtːaː bˈʌhʊt ʃˈoːɾ kˈʌɾtˌaː hɛː",
+        "dur": 4.35,
+        "wav": "07.wav"
+      },
+      {
+        "i": 8,
+        "cat": "common",
+        "text": "तुम्हारी किताब मेरे बैग में कैसे आई?",
+        "phonemes": "tʊmhˌaːɾi kɪtˈaːb mˌeːɾeː bˈɛːɡ mẽː kˈɛːseː ˈaːi ?",
+        "dur": 3.875,
+        "wav": "08.wav"
+      },
+      {
+        "i": 9,
+        "cat": "common",
+        "text": "मुझे वह लड़का बिल्कुल पसंद नहीं है।",
+        "phonemes": "mˌʊɟʰeː ʋˌəh lˈʌr.kˌaː bˈɪlkʊl pəsˈʌnd nˈʌhĩ hɛː",
+        "dur": 3.85,
+        "wav": "09.wav"
+      },
+      {
+        "i": 10,
+        "cat": "common",
+        "text": "चलो आज शाम को पार्क चलते हैं।",
+        "phonemes": "cˈʌloː ˈaːɟ ʃˈaːm koː pˈaːɾk cˈʌltˌeː hɛ̃",
+        "dur": 3.275,
+        "wav": "10.wav"
+      },
+      {
+        "i": 11,
+        "cat": "difficult",
+        "text": "मेरे पापा के दोस्त का बेटा श्रीनगर में रहता है और वहीं काम करता है।",
+        "phonemes": "mˌeːɾeː pˈaːpaː keː dˈoːst kaː bˈeːʈaː ʃɾˈiːnəɡˌəɾ mẽː ɾˈʌhətˌaː hɛː ɔːɾ ʋˈʌhĩ kˈaːm kˈʌɾtˌaː hɛː",
+        "dur": 6.45,
+        "wav": "11.wav"
+      },
+      {
+        "i": 12,
+        "cat": "difficult",
+        "text": "बारिश के बाद सड़क पर इतना पानी भर गया कि गाड़ियाँ आगे नहीं बढ़ पा रही थीं।",
+        "phonemes": "bˈaːɾɪʃ keː bˈaːd sˈʌr.ək pˈʌɾ ˈɪtnˌaː pˈaːni bʰˈʌɾ ɡˈʌjaː kˈɪ ɡˈaːr.ɪjˌã ˈaːɡeː nˈʌhĩ bˈʌr.h pˈaː ɾˌəhi tʰĩ",
+        "dur": 6.55,
+        "wav": "12.wav"
+      },
+      {
+        "i": 13,
+        "cat": "difficult",
+        "text": "दादी हमेशा कहती हैं कि अच्छे काम करने वालों को भगवान हमेशा रास्ता दिखाते हैं।",
+        "phonemes": "dˈaːdi həmˈeːʃaː kˈʌhətˌi hɛ̃ kˈɪ ˈʌcʰcʰeː kˈaːm kˈʌɾnˌeː ʋˈaːlõ koː bʰˌəɡʋˈaːn həmˈeːʃaː ɾˈaːstaː dɪkʰˈaːteː hɛ̃",
+        "dur": 7.475,
+        "wav": "13.wav"
+      },
+      {
+        "i": 14,
+        "cat": "difficult",
+        "text": "मेरे चचेरे भाई की शादी में पूरा गाँव आया था और बहुत मज़े हुए।",
+        "phonemes": "mˌeːɾeː cəcˈeːɾeː bʰˈaːi ki ʃˈaːdi mẽː pˈuːɾaː ɡˈãnʋ ˈaːjaː tʰaː ɔːɾ bˈʌhʊt mˈʌzeː hˈʊeː",
+        "dur": 5.875,
+        "wav": "14.wav"
+      },
+      {
+        "i": 15,
+        "cat": "difficult",
+        "text": "ट्रेन में बैठे-बैठे बाहर के खेतों को देखता रहा, बहुत अच्छा लगा।",
+        "phonemes": "ʈɾˈeːn mẽː bˈɛːʈʰeːbˈɛːʈʰeː bˈaːhəɾ keː kʰˈeːtõ koː dˈeːkʰtˌaː ɾˌəhaː , bˈʌhʊt ˈʌcʰcʰaː lˈʌɡaː",
+        "dur": 5.975,
+        "wav": "15.wav"
+      },
+      {
+        "i": 16,
+        "cat": "child",
+        "text": "मम्मी देखो! बिल्ली के बच्चे गेंद से खेल रहे हैं।",
+        "phonemes": "mˈʌmmi dˈeːkʰoː ! bˈɪlli keː bˈʌcːeː ɡˈẽːd seː kʰˈeːl ɾˌəheː hɛ̃",
+        "dur": 4.45,
+        "wav": "16.wav"
+      },
+      {
+        "i": 17,
+        "cat": "child",
+        "text": "मुझे वो लाल गाड़ी चाहिए।",
+        "phonemes": "mˌʊɟʰeː ʋoː lˈaːl ɡˈaːr.i cˈaːhɪˌeː",
+        "dur": 3.0,
+        "wav": "17.wav"
+      },
+      {
+        "i": 18,
+        "cat": "child",
+        "text": "आसमान में चिड़िया उड़ रही हैं।",
+        "phonemes": "ˌaːsmˈaːn mẽː cˈɪr.ɪjˌaː ˈʊr. ɾˌəhi hɛ̃",
+        "dur": 3.075,
+        "wav": "18.wav"
+      }
+    ]
+  },
+  "pt-br": {
+    "voice": "pf_dora",
+    "name": "Portuguese BR",
+    "count": 18,
+    "ok": 18,
+    "fail": 0,
+    "by_cat": {
+      "common": {
+        "n": 10,
+        "ok": 10,
+        "fail": 0,
+        "avg": 2.49
+      },
+      "difficult": {
+        "n": 5,
+        "ok": 5,
+        "fail": 0,
+        "avg": 5.07
+      },
+      "child": {
+        "n": 3,
+        "ok": 3,
+        "fail": 0,
+        "avg": 3.192
+      }
+    },
+    "details": [
+      {
+        "i": 1,
+        "cat": "common",
+        "text": "E aí, beleza?",
+        "phonemes": "i aˈi , bˌelˈezæ ?",
+        "dur": 1.35,
+        "wav": "01.wav"
+      },
+      {
+        "i": 2,
+        "cat": "common",
+        "text": "Passa o copo aqui, por favor.",
+        "phonemes": "pˈasæ ʊ kˈɔpw akˈi , por favˈor .",
+        "dur": 2.15,
+        "wav": "02.wav"
+      },
+      {
+        "i": 3,
+        "cat": "common",
+        "text": "Não achei minhas chaves em lugar nenhum.",
+        "phonemes": "nˌɐ̃ʊ̃ aʃˈA mˌiɲæs ʃˈavyz ˈAŋ luɡˈar neɲˈũŋ .",
+        "dur": 2.6,
+        "wav": "03.wav"
+      },
+      {
+        "i": 4,
+        "cat": "common",
+        "text": "Você já comeu ou ainda não?",
+        "phonemes": "vosˌe ʒˈa komˈeʊ ow ˌaˈiŋdæ nˈɐ̃ʊ̃ ?",
+        "dur": 2.175,
+        "wav": "04.wav"
+      },
+      {
+        "i": 5,
+        "cat": "common",
+        "text": "Minha mãe faz o melhor arroz com feijão do mundo.",
+        "phonemes": "mˌiɲæ mˈɐ̃y faz ʊ meljˈɔɾ axˈos koŋ fAʒˈɐ̃ʊ̃ dʊ mˈũŋdʊ .",
+        "dur": 3.1,
+        "wav": "05.wav"
+      },
+      {
+        "i": 6,
+        "cat": "common",
+        "text": "Ontem choveu o dia inteiro e eu não saí de casa.",
+        "phonemes": "ˈoŋtAŋ ʃovˈeʊ ʊ ʤˈiæ ˌiŋtˈAɾw i eʊ nˌɐ̃ʊ̃ saˈi ʤy kˈazæ .",
+        "dur": 3.0,
+        "wav": "06.wav"
+      },
+      {
+        "i": 7,
+        "cat": "common",
+        "text": "O cachorro do vizinho não para de latir.",
+        "phonemes": "ʊ kˌaʃˈoxʊ dʊ vˌizˈiɲʊ nˌɐ̃ʊ̃ pˌaɾæ ʤy laʧˈir .",
+        "dur": 2.575,
+        "wav": "07.wav"
+      },
+      {
+        "i": 8,
+        "cat": "common",
+        "text": "Empresta seu lápis pra mim? Esqueci o meu.",
+        "phonemes": "ˌAmprˈɛstæ seʊ lˈapis pra mˈiŋ ? ˌeskesˈi ʊ mˈeʊ .",
+        "dur": 2.775,
+        "wav": "08.wav"
+      },
+      {
+        "i": 9,
+        "cat": "common",
+        "text": "Não gosto nada daquele cara, não sei por quê.",
+        "phonemes": "nˌɐ̃ʊ̃ ɡˈɔstʊ nˈadæ dˌakˈely kˈaɾæ , nˌɐ̃ʊ̃ sˈA por kˈe .",
+        "dur": 2.975,
+        "wav": "09.wav"
+      },
+      {
+        "i": 10,
+        "cat": "common",
+        "text": "Vamos comer pizza hoje à noite.",
+        "phonemes": "vˌɐ̃mʊs komˈer pˈiʦæ ˈoʒj ˌaː nˈoɪʧy .",
+        "dur": 2.2,
+        "wav": "10.wav"
+      },
+      {
+        "i": 11,
+        "cat": "difficult",
+        "text": "O médico falou que eu tenho que beber mais água e que pare de ficar no celular até tarde.",
+        "phonemes": "ʊ mˈɛʤikʊ falˈow ky eʊ tˌeɲʊ ky bebˈer mˈIz ˈaɡwæ i ky pˈaɾy ʤy fikˈar nʊ sˌelulˈaɾ atˌɛ tˈaɾəʤy .",
+        "dur": 5.425,
+        "wav": "11.wav"
+      },
+      {
+        "i": 12,
+        "cat": "difficult",
+        "text": "Meu irmão mais novo ficou doente ontem e a minha mãe levou ele no hospital de manhã.",
+        "phonemes": "meʊ iɾəmˈɐ̃ʊ̃ mˈIz nˈovʊ fikˈow dˌoˈAŋʧj ˈoŋtAŋ i a mˌiɲæ mˈɐ̃y levˈow ˌely nʊ ˌospitˈW ʤy mɐ̃ɲˈɐ̃ .",
+        "dur": 5.025,
+        "wav": "12.wav"
+      },
+      {
+        "i": 13,
+        "cat": "difficult",
+        "text": "O ônibus atrasou demais e eu cheguei atrasado no trabalho, foi um caos.",
+        "phonemes": "u ˈonibuz ˌatrazˈow demˈIz i eʊ ʃeɡˈA ˌatrazˈadʊ nʊ trˌabˈaljʊ , foɪ ũŋ kˈWs .",
+        "dur": 4.35,
+        "wav": "13.wav"
+      },
+      {
+        "i": 14,
+        "cat": "difficult",
+        "text": "Minha vizinha contou que a rua de trás tá toda quebrada por causa da obra que fizeram.",
+        "phonemes": "mˌiɲæ vˌizˈiɲæ koŋtˈow ky a xˈuæ ʤy trˈas tˈa tˈodæ kˌebrˈadæ por kˈWzæ da ˈɔbræ ky fˌizˈɛɾɐ̃ʊ̃ .",
+        "dur": 4.975,
+        "wav": "14.wav"
+      },
+      {
+        "i": 15,
+        "cat": "difficult",
+        "text": "A professora pediu pra gente trazer material de reciclagem pra fazer o projeto da escola.",
+        "phonemes": "a prˌofesˈoɾæ peʤˈiʊ pra ʒˈAŋʧy trazˈer mˌateɾiˈW ʤy xˌesiklˈaʒAŋ pra fazˌeɾ ʊ prˌoʒˈɛtʊ da ˌeskˈɔlæ .",
+        "dur": 5.575,
+        "wav": "15.wav"
+      },
+      {
+        "i": 16,
+        "cat": "child",
+        "text": "Olha, mãe! O gatinho tá dormindo debaixo da cadeira.",
+        "phonemes": "ˈɔljæ , mˈɐ̃y ! ʊ ɡˌaʧˈiɲʊ tˈa dˌoɾəmˈiŋdʊ dˌebˈIʃʊ da kˌadˈAɾæ .",
+        "dur": 3.225,
+        "wav": "16.wav"
+      },
+      {
+        "i": 17,
+        "cat": "child",
+        "text": "Quero ir no parque jogar com meu primo.",
+        "phonemes": "kˈɛɾw ˈir nʊ pˈaɾəky ʒoɡˈar koŋ meʊ prˈimʊ .",
+        "dur": 2.625,
+        "wav": "17.wav"
+      },
+      {
+        "i": 18,
+        "cat": "child",
+        "text": "O sapo pulou na água e se escondeu debaixo de uma pedra.",
+        "phonemes": "ʊ sˈapʊ pulˈow na ˈaɡwæ i sj ˌeskoŋdˈeʊ dˌebˈIʃʊ ʤj ˌumæ pˈɛdræ .",
+        "dur": 3.725,
+        "wav": "18.wav"
+      }
+    ]
+  },
+  "zh": {
+    "voice": "zf_xiaoxiao",
+    "name": "Mandarin",
+    "count": 18,
+    "ok": 18,
+    "fail": 0,
+    "by_cat": {
+      "common": {
+        "n": 10,
+        "ok": 10,
+        "fail": 0,
+        "avg": 2.875
+      },
+      "difficult": {
+        "n": 5,
+        "ok": 5,
+        "fail": 0,
+        "avg": 4.435
+      },
+      "child": {
+        "n": 3,
+        "ok": 3,
+        "fail": 0,
+        "avg": 4.267
+      }
+    },
+    "details": [
+      {
+        "i": 1,
+        "cat": "common",
+        "text": "嘿，最近怎么样？",
+        "phonemes": "xei→, ʦwei↘ʨi↘n ʦə↓nmɤja↘ŋ?",
+        "dur": 2.275,
+        "wav": "01.wav"
+      },
+      {
+        "i": 2,
+        "cat": "common",
+        "text": "把水递给我，渴死了。",
+        "phonemes": "pa↓ ʂwei↓ ti↘kei↓ wo↓, kʰɤ↓sɨ↓ lɤ.",
+        "dur": 2.6,
+        "wav": "02.wav"
+      },
+      {
+        "i": 3,
+        "cat": "common",
+        "text": "我手机放哪儿了？",
+        "phonemes": "wo↓ ʂou↓ʨi→ fa↘ŋ na↓ɚ↗ lɤ?",
+        "dur": 2.5,
+        "wav": "03.wav"
+      },
+      {
+        "i": 4,
+        "cat": "common",
+        "text": "今天在学校怎么样？",
+        "phonemes": "ʨi→ntʰjɛ→n ʦai↘ ɕɥe↗ɕjau↘ ʦə↓nmɤja↘ŋ?",
+        "dur": 2.725,
+        "wav": "04.wav"
+      },
+      {
+        "i": 5,
+        "cat": "common",
+        "text": "妈妈做的红烧肉最好吃。",
+        "phonemes": "ma→ma→ ʦwo↘ tɤ xʊ↗ŋʂau→ɻou↘ ʦwei↘ xau↓ꭧʰɨ→.",
+        "dur": 3.05,
+        "wav": "05.wav"
+      },
+      {
+        "i": 6,
+        "cat": "common",
+        "text": "昨天下了一整天的雨。",
+        "phonemes": "ʦwo↗tʰjɛ→n ɕja↘ lɤ i→ꭧə↓ŋtʰjɛ→n tɤ y↓.",
+        "dur": 2.675,
+        "wav": "06.wav"
+      },
+      {
+        "i": 7,
+        "cat": "common",
+        "text": "隔壁王叔叔家的狗老是叫。",
+        "phonemes": "kɤ↗pi↘ wa↗ŋ ʂu→ʂu→ ʨja→ tɤ kou↓ lau↓ ʂɨ↘ ʨjau↘.",
+        "dur": 3.125,
+        "wav": "07.wav"
+      },
+      {
+        "i": 8,
+        "cat": "common",
+        "text": "你看见我书包里的课本了吗？",
+        "phonemes": "ni↓ kʰa↘nʨjɛ↘n wo↓ ʂu→pau→ li↓ tɤ kʰɤ↘pə↓n lɤ ma?",
+        "dur": 3.3,
+        "wav": "08.wav"
+      },
+      {
+        "i": 9,
+        "cat": "common",
+        "text": "我不喜欢那个人，说不上为什么。",
+        "phonemes": "wo↓ pu↘ ɕi↓xwa→n na↘kɤ ɻə↗n, ʂwo→pu↘ʂa↘ŋ wei↘ʂə↗nmɤ.",
+        "dur": 3.525,
+        "wav": "09.wav"
+      },
+      {
+        "i": 10,
+        "cat": "common",
+        "text": "晚上一起去吃火锅吧。",
+        "phonemes": "wa↓nʂa↘ŋ i↘ʨʰi↓ ʨʰy↘ ꭧʰɨ→xwo↓kwo→ pa.",
+        "dur": 2.975,
+        "wav": "10.wav"
+      },
+      {
+        "i": 11,
+        "cat": "difficult",
+        "text": "老师说下周要考试，让我们回去好好复习。",
+        "phonemes": "lau↓ʂɨ→ ʂwo→ ɕja↘ꭧou→ jau↘ kʰau↓ʂɨ↘, ɻa↘ŋ wo↓mən xwei↗ʨʰy↘ xau↓xau↓ fu↘ɕi↗.",
+        "dur": 4.6,
+        "wav": "11.wav"
+      },
+      {
+        "i": 12,
+        "cat": "difficult",
+        "text": "我昨天在超市碰见你妈了，她买了好多菜。",
+        "phonemes": "wo↓ ʦwo↗tʰjɛ→n ʦai↘ ꭧʰau→ʂɨ↘ pʰə↘ŋʨjɛ↘n ni↓ ma→ lɤ, tʰa→ mai↓ lɤ xau↓two→ ʦʰai↘.",
+        "dur": 4.4,
+        "wav": "12.wav"
+      },
+      {
+        "i": 13,
+        "cat": "difficult",
+        "text": "他跑到车站的时候车已经开了，只能等下一班。",
+        "phonemes": "tʰa→ pʰau↓ tau↘ ꭧʰɤ→ꭧa↘n tɤ ʂɨ↗xou↘ ꭧʰɤ→ i↓ʨi→ŋ kʰai→ lɤ, ꭧɨ↓nə↗ŋ tə↓ŋ ɕja↘ i→pa→n.",
+        "dur": 4.65,
+        "wav": "13.wav"
+      },
+      {
+        "i": 14,
+        "cat": "difficult",
+        "text": "奶奶家那只猫特别懒，整天就知道睡觉。",
+        "phonemes": "nai↓nai↓ʨja→ na↘ ꭧɨ↓ mau→ tʰɤ↘pje↗ la↓n, ꭧə↓ŋtʰjɛ→n ʨjou↘ ꭧɨ→tau↘ ʂwei↘ʨjau↘.",
+        "dur": 4.35,
+        "wav": "14.wav"
+      },
+      {
+        "i": 15,
+        "cat": "difficult",
+        "text": "这条路上车太多了，我们绕一下走那边吧。",
+        "phonemes": "ꭧɤ↘ tʰjau↗ lu↘ʂa↘ŋꭧʰɤ→ tʰai↘two→ lɤ, wo↓mən ɻau↘ i→ɕja↘ ʦou↓ na↘pjɛ→n pa.",
+        "dur": 4.175,
+        "wav": "15.wav"
+      },
+      {
+        "i": 16,
+        "cat": "child",
+        "text": "妈妈快看！小猫咪在沙发上睡着了。",
+        "phonemes": "ma→ma→ kʰwai↘ kʰa↘n! ɕjau↓mau→mi→ ʦai↘ ʂa→fa→ ʂa↘ŋ ʂwei↘ꭧau↗ lɤ.",
+        "dur": 4.0,
+        "wav": "16.wav"
+      },
+      {
+        "i": 17,
+        "cat": "child",
+        "text": "我想要那个红色的小汽车，就在橱窗里放着的。",
+        "phonemes": "wo↓ ɕja↓ŋjau↘ na↘kɤ xʊ↗ŋsɤ↘ tɤ ɕjau↓ʨʰi↘ꭧʰɤ→, ʨjou↘ ʦai↘ ꭧʰu↗ꭧʰwa→ŋ li↓ fa↘ŋ ꭧɤ tɤ.",
+        "dur": 4.775,
+        "wav": "17.wav"
+      },
+      {
+        "i": 18,
+        "cat": "child",
+        "text": "蝴蝶在花园里飞来飞去，好漂亮啊。",
+        "phonemes": "xu↗tje↗ ʦai↘ xwa→ɥɛ↗nli↓ fei→lai↗fei→ʨʰy↘, xau↓ pʰjau↘lja↘ŋ a.",
+        "dur": 4.025,
+        "wav": "18.wav"
+      }
+    ]
+  }
+}

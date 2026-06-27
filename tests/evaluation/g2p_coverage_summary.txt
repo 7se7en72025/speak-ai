@@ -1,0 +1,71 @@
+
+=== Spanish (es) ===
+  18 sentences, 0 failures, 40 phonemes
+  Expected: 7/7
+    ʎ (ll): OK
+    ɲ (ñ): OK
+    ɾ (r): OK
+    ʧ (ch): OK
+    ɣ (g): OK
+    β (b): OK
+    ð (d): OK
+  common: 10 sents, 35 phonemes
+  difficult: 5 sents, 33 phonemes
+  child: 3 sents, 31 phonemes
+  Top 10: ˈ:112, e:97, a:83, o:75, ɾ:41, n:37, s:37, i:35, l:34, m:30
+
+=== French (fr) ===
+  18 sentences, 0 failures, 37 phonemes
+  Expected: 6/6
+    ʁ (r): OK
+    ø (eu): OK
+    œ (eu): OK
+    ə (e): OK
+    ɛ (è): OK
+    ʒ (j): OK
+  common: 10 sents, 34 phonemes
+  difficult: 5 sents, 35 phonemes
+  child: 3 sents, 31 phonemes
+  Top 10: ˈ:86, a:56, ʁ:49, l:42, ɛ:36, e:32, ə:31, t:30, s:25, d:24
+
+=== Hindi (hi) ===
+  18 sentences, 0 failures, 41 phonemes
+  Expected: 6/6
+    ʰ (asp): OK
+    ʈ (ṭ): OK
+    ɟ (j): OK
+    ʋ (v): OK
+    ː (long): OK
+    ɡ (g): OK
+  common: 10 sents, 38 phonemes
+  difficult: 5 sents, 36 phonemes
+  child: 3 sents, 30 phonemes
+  Top 10: ː:154, ˈ:111, a:74, e:50, h:40, k:39, ʌ:37, ɾ:32, ˌ:29, m:27
+
+=== Portuguese BR (pt-br) ===
+  18 sentences, 0 failures, 48 phonemes
+  Expected: 6/6
+    ɲ (nh): OK
+    ɾ (r): OK
+    ʃ (ch): OK
+    ʒ (j): OK
+    æ (ã): OK
+    ʊ (u): OK
+  common: 10 sents, 44 phonemes
+  difficult: 5 sents, 44 phonemes
+  child: 3 sents, 39 phonemes
+  Top 10: ˈ:106, a:59, ʊ:52, ˌ:46, i:39, e:39, o:36, k:30, æ:28, r:27
+
+=== Mandarin (zh) ===
+  18 sentences, 0 failures, 40 phonemes
+  Expected: 6/6
+    ʂ (sh): OK
+    ɻ (r): OK
+    ɕ (x): OK
+    ʨ (j): OK
+    ʦ (z): OK
+    ↘ (tone4): OK
+  common: 10 sents, 39 phonemes
+  difficult: 5 sents, 34 phonemes
+  child: 3 sents, 35 phonemes
+  Top 10: a:86, ↘:70, →:54, ↓:52, i:45, u:44, n:35, ʰ:35, ɤ:32, j:31
