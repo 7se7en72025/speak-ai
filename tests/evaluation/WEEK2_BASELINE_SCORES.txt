@@ -30,6 +30,35 @@ Mandarin (zh)    zf_xiaoxiao  18/18   10/10    5/5         3/3
 
 TOTAL: 90 WAV files generated, 0 failures
 
+espeak-ng Comparison (22050Hz, robotic baseline)
+--------------------------------------------------
+
+Language         WAVs    Purpose
+Spanish (es)     18/18   before/after comparison
+French (fr)      18/18   before/after comparison
+Hindi (hi)       18/18   before/after comparison
+Portuguese BR    18/18   before/after comparison
+Mandarin (zh)    18/18   before/after comparison
+
+TOTAL: 90 espeak-ng WAVs, 0 failures
+
+Structure:
+  wav/kokoro/{es,fr,hi,pt-br,zh}/01-18.wav  (neural TTS)
+  wav/espeak/{es,fr,hi,pt-br,zh}/01-18.wav  (robotic baseline)
+
+Verification (730/730 checks passed)
+--------------------------------------
+1. File counts: 180/180 (90 kokoro + 90 espeak)
+2. Duration matches report: 90/90
+3. Format (24kHz, mono): 90/90
+4. No silence: 90/90
+5. No clipping: 90/90
+6. Unique audio: 90/90
+7. Phonemes present: 90/90
+8. Speech quality (not noise): 90/90
+9. Kokoro longer than espeak: 90/90
+10. Regeneration cosine similarity > 0.98: 5/5
+
 G2P Backends:
 - es, fr, hi, pt-br: espeak-ng (via phonemizer.backend.EspeakBackend)
 - zh: misaki zh (pinyin-based G2P)
