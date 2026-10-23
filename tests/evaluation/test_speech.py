@@ -18,9 +18,10 @@
 
 import os
 import sys
+import threading
 import types
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
@@ -42,9 +43,60 @@ sys.modules['sugar3'] = sugar3_mock
 sys.modules['sugar3.speech'] = sugar3_speech
 
 from speech import (
-    _detect_language, _LATIN_HINTS, _NS_PER_CHUNK, _DEFAULT_CHUNK_BYTES,
+    Speech, _detect_language, _LATIN_HINTS, _NS_PER_CHUNK, _DEFAULT_CHUNK_BYTES,
     _MIN_INTERVAL_MS, _MAX_FAILURES, _KOKORO_SR, _ESPEAK_SR
 )
+
+
+class TestKokoroInitializationFailure(unittest.TestCase):
+    def test_failure_wakes_waiting_requests_for_espeak_fallback(self):
+        for method in ('_speak_impl', 'speak_multilingual'):
+            with self.subTest(method=method):
+                s = Speech.__new__(Speech)
+                s._language_hint = None
+                s._kokoro_lang_map = {'en-us': ('a', 'af_heart')}
+                s._tts_cache = None
+                s._kokoro_model = None
+                s._kokoro_failed = False
+                s._kokoro_ready = threading.Event()
+                s._get_backend_for_lang = MagicMock(return_value=None)
+                s._cache_voice_key = MagicMock(return_value='af_heart')
+                s._build_pipeline = MagicMock()
+                s.restart_sound_device = MagicMock()
+                s.pipeline = MagicMock()
+                status = MagicMock(pitch=100, rate=100)
+                args = (status, 'hello') if method == '_speak_impl' else ('hello',)
+                worker = threading.Thread(target=getattr(s, method), args=args,
+                                          daemon=True)
+                waiting = threading.Event()
+                real_wait = s._kokoro_ready.wait
+
+                def wait_for_kokoro(timeout=None):
+                    waiting.set()
+                    return real_wait(timeout)
+
+                with patch('speech.KOKORO_AVAILABLE', True), \
+                        patch('speech.KPipeline', create=True,
+                              side_effect=RuntimeError('initialization failed')), \
+                        patch.object(s._kokoro_ready, 'wait',
+                                     side_effect=wait_for_kokoro) as wait:
+                    try:
+                        worker.start()
+                        self.assertTrue(waiting.wait(timeout=2))
+                        wait.assert_called_once_with(timeout=30)
+                        s._setup_kokoro()
+                        worker.join(timeout=2)
+                        self.assertFalse(worker.is_alive(),
+                                         'Request waited for the Kokoro timeout')
+                        self.assertTrue(s._kokoro_failed)
+                        self.assertTrue(s._kokoro_ready.is_set())
+                        s._build_pipeline.assert_called_once_with('espeak', _ESPEAK_SR)
+                        s.restart_sound_device.assert_called_once_with()
+                        self.assertEqual(s.pipeline.get_by_name('espeak').props.text,
+                                         'hello')
+                    finally:
+                        s._kokoro_ready.set()
+                        worker.join(timeout=2)
 
 
 class TestDetectLanguage(unittest.TestCase):
