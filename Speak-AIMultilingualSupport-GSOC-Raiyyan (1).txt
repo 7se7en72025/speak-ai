@@ -1,0 +1,2098 @@
+Google Summer of Code 2026 Proposal
+
+●​ Project Title: Speak-AI Multilingual Support
+●​ Organization: Sugar Labs
+●​ Coding Mentors: Mebin Thattil, Ibiam Chihurumnaya
+●​ Assisting Mentors: Walter Bender, Devin Ulibarri
+●​ Project Size: Small (90 Hours)
+
+Personal Information
+●​ Full Name: NSA Raiyyan
+●​ Email: f20241312@pilani.bits-pilani.ac.in
+●​ GitHub: https://github.com/7se7en72025
+●​ Linkedin:Abdulla Raiyyan
+●​ Element X : @r4iyy4n:matrix.org(7se7en72025)
+●​ University: Birla Institute of Technology and Science, Pilani
+
+(2024-2028)
+●​ Year of Study: 2024-2028, Sophomore
+●​ Country Residence: India
+●​ TimeZone: IST Asia/Kolkata | UTC+5:30
+
+●​ Preferred Language: Proficient in English for communication, both
+verbal and written
+●​ Native Languages : Hindi (Native), English (Fluent), Urdu
+(Conversational), Telugu, Arabic (Reading proficiency). One of the target
+languages for this project is Hindi, and I can assess the pronunciation
+quality of Devanagari script TTS systems directly.
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Background Overview
+I am NSA Raiyyan, a second-year student at BITS Pilani, Pilani Campus. Ranked
+among the top in my Batch academically. I initiated my coding journey with C
+and C++. I started learning the basics of coding during my first semester.
+Over time, this interest in coding evolved into a more profound interest in
+software development.So, during the second semester of my course, I
+transitioned into working with the JavaScript ecosystem, which meant working
+with React, Node.js, TypeScript, and eventually tools such as Redux and Jest for
+testing.
+I was able to develop several personal projects, and I was finally beginning to get
+a sense of how actual applications are built, not only as individual components
+but as actual systems.
+Python was introduced later through coursework and self-study, and I've since
+used it for scripting, working with ML libraries such as PyTorch and
+HuggingFace Transformers, and parsing complex codebases such as Speak-AI's
+Kokoro TTS pipeline (which ties together GStreamer, GObject, numpy, and torch
+in non-obvious ways).
+Besides that, I am an active member of the Department of Visual Media (DVM),
+BITS Pilani, which is the student technical group responsible for developing and
+hosting the official websites and mobile applications for BITS Pilani's flagship
+festivals.
+These mobile applications handle registrations, hostel management, and process
+digital transactions worth over ₹6 crores annually for thousands of users.
+Oasis Website - Official website of Asia’s largest student-run cultural festival,
+with tens of thousands of users accessing the website during the course of the
+fest.
+Oasis App - Feature-rich mobile application designed specifically for the fest,
+with features such as event scheduling, in-app wallet support, ticket purchases,
+and food ordering. Also, features QR code-based access and attendance
+management.
+APOGEE Website - Official website of BITS Pilani’s international technical
+festival, with registrations and events managed at an immense scale.
+
+2
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+APOGEE App - Event tracking and management mobile application designed
+specifically for Asia’s largest student-run technical festival.
+Timetable Generator & Hostel Allocation Portal - Student-facing applications
+designed and developed for the entire student community of BITS Pilani.
+
+I am also a part of Postman x BITS Pilani, where I have worked on developing
+developer tools and community-driven tech projects.
+These two experiences have influenced my thoughts on how to develop software
+that real people use which is directly applicable to developing a TTS interface
+that 10-year-old kids in offline classrooms can use seamlessly.
+My involvement with open source began when I found Sugar Labs and started
+learning about the Music Blocks project.
+After learning about the repository and the process of contributing, I submitted
+my first pull request, which was accepted in December 2025.
+Since then, I have had 26 pull requests accepted into the Music Blocks project.
+This has given me a good understanding of how Sugar Labs works, including the
+code review process, community guidelines, and the level of code quality that is
+expected.
+I am proficient in:
+Programming Languages: JavaScript, TypeScript, Python, C, C++, Dart
+Libraries/Frameworks: React, Node.js, Express, Redux, Jest, Cypress, Flask,
+PyTorch, Flutter
+Tools/Platforms: Git, GitHub, GitHub Actions, CI/CD, Docker, Linux, VS
+Code, Postman, ESLint
+Speech/Audio: espeak-ng, GStreamer
+
+This combination of full-stack web development and audio processing expertise
+makes me perfectly suited for the technical requirements of the proposed TTS
+architecture.
+
+3
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+The Philosophy of Language
+
+I've been fascinated by languages.
+In India, I was introduced to Hindi, English, Urdu, Telugu, and dozens of
+regional dialects that I'd hear in passing, each with its own rhythm, its own way
+of constructing a sentence.
+When I heard about Music Blocks and how it teaches children to write music
+through programming, I thought, "That's how you make learning fun, not work."
+
+Why SugarLabs
+
+Speak-AI is just an extension of that philosophy of language. The child types out
+words, and a face repeats them. If that voice sounds real, if it sounds like a voice
+the child knows, then it becomes a tool for learning,
+for practicing pronunciation, for expression. But if it sounds like a robot or
+butchers their language, then it's just another piece of software that doesn't see
+them.
+This, I think, is what gets me most excited about this project. As my native
+language is Hindi, I don't have to wonder if the TTS model is getting schwas
+wrong, tones flat, or retroflex consonants wrong; I can tell right away.
+And for a project where the quality of pronunciation is the number one priority,
+having a native speaker's ear for one of the primary target languages isn't just
+nice; it's actually an advantage.
+The fact that Sugar deployments happen in classrooms in Cairo, Nairobi, Kigali,
+and Cusco, often without any reliable internet access, means that every
+engineering decision has to happen in the context of those constraints.
+No downloading 60MB models at runtime. No, assuming that CUDA is available.
+That kind of engineering is what gets me most excited.
+
+4
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Project Vision & Architectural Strategy
+Bridging the gap between raw TTS capabilities and
+classroom-ready hardware.
+The Core Bottleneck: Speak-AI currently provides natural speech
+exclusively in English. For every other language—Hindi, Arabic,
+Swahili, Kinyarwanda, Quechua—the system defaults to eSpeak-ng.
+This produces robotic, mispronounced audio that actively disrupts the
+language learning process in global classrooms.
+The Strategic Fix:
+Instead of bringing in massive architectural changes, the
+project leverages the existing infrastructure in the codebase
+(alt_tts_backends.py and tts_cache.py).
+By integrating these modules into the project, a robust routing
+pipeline is achieved that is strictly designed for low-resource
+environments.
+
+The Execution Path:
+
+1)​ Data-Driven Dispatch: Routes text dynamically to the best offline
+engine based on language requirements (Kokoro for core languages,
+Piper for Arabic/Swahili, MMS for indigenous languages).
+2)​ Hardware-Aware Defenses: Enforces dynamic RAM detection
+and a sub-millisecond caching layer to actively prevent
+out-of-memory crashes on 1GB classroom laptops.
+3)​ Zero Silence UX: Uses asynchronous background loading with
+immediate eSpeak placeholder, completely eliminating severe UI
+freezes associated with heavy neural models.
+4)​ Objective Validation: Scores every language integration against a
+reproducible Phoneme Error Rate (PER) target to ensure true native
+speaker accuracy.
+
+5
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Discussions and Community Presence
+
+​
+
+6
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+My journey with Sugar Labs has always been about more than just committing
+code.
+Over the course of getting 24 pull requests merged into the Music Blocks
+repository, I have actively participated in the technical design discussions that
+shape the project.
+I routinely review PRs from fellow contributors, offering constructive feedback
+on code quality, frontend architecture, and testing practices.
+A significant part of my review process involves diving into our CI/CD pipelines.
+I frequently help peers debug failing GitHub Actions workflows, untangle
+complex merge conflicts, and troubleshoot environment inconsistencies.
+Whether it is fixing a broken test runner, resolving linting errors, or optimizing
+build steps in GitHub Actions, my goal is to unblock others so the whole team
+can move faster, embodying the true spirit of open-source citizenship.
+For my Speak-AI project, I plan to take this collaborative spirit to a much
+wider extent beyond the codebase to find native speakers for thorough,
+real-world testing.
+I plan to actively engage with particular communities within particular areas for
+feedback at the three crucial project checkpoints:
+
+- Kinyarwanda Wikimedians: for tonal correctness.
+
+- OpenStreetMap Arabic Contributors: to verify the model’s ability to
+differentiate between dialects without falling back into Modern Standard Arabic.
+
+- Quechua Communities: to test the system with languages having very
+dissimilar morphological structures.
+
+7
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+By directly engaging with communities of people who are most familiar with the
+languages, I plan to ensure not only the technical viability of Speak-AI but also
+its effectiveness within the classrooms for which it is intended.
+
+My Relevant Experience (Qualifications):
+I have a total of 39 pull requests, with 26 merged and 9 open in Music Blocks v3,
+and 3 open and 1 superseded in Speak-AI.
+Rather than enumerate the individual pull requests, I have grouped the
+highlights by the nature of the problem being solved, as this is most relevant to
+the current work.
+
+Contributions to Music Blocks (26 Merged, 9 Open)
+Performance and Resource Optimization
+PR #5577: Idle Watcher (Merged) — Implemented a throttling mechanism that
+stops the rendering cycle when it is not required. Achieved a 98% reduction in
+idle CPU utilization, thereby increasing battery life for student laptops. This is
+a similar problem that I will face when I work on Speak-AI, as I will be dealing
+with a device that has limited resources.
+PR #5902: Stabilize Audio Engine for Infinite-Loop Playback (Merged) —
+Resolved crashes of the audio engine when the composition takes a long time.
+This is done by managing the buffer states.
+PR #6086: Async Yield to Prevent UI Freeze (Merged) — Implemented a
+mechanism for async yield when a deeply recursive execution cycle occurs. This
+prevents infinite recursion from causing the browser UI to freeze.
+PR #5915: Reduce TBT/CLS + Improve Accessibility (Merged) — Implemented
+chunked rendering, passive listeners, and layout improvements for better web
+vitals and accessibility.
+PR #6007: Throttle Infinite-Grid Redraw (Open) — Implemented the use of
+requestAnimationFrame for infinite grid redraw. This prevents thrashing of the
+layout when the canvas is interacted with.
+PR #4775: Optimize Wheel Rendering in Dark Mode (Merged) — Removed
+redundant rendering of the color wheel selector.
+
+Audio and Music Engine
+
+8
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+PR #5742: Zombie Audio Fix (Merged) — Implemented voice registry to track
+and forcefully terminate all active audio voices on program halt. This is
+analogous to the GStreamer pipeline cleanup I will need to implement when
+switching TTS backends mid-session for Speak-AI.
+PR #5095: Lag Correction for Note Timing (Merged) — Implemented gradual
+clock correction to prevent note rushing due to high CPU load. This is similar to
+the timing discipline I will need to implement for the TTS streaming pipeline,
+where I will need to stream chunks of audio to the GStreamer pipeline without
+lag or drift.
+PR #5665: Smooth Glissando Transitions (Open) — Optimizing the audio thread
+to prevent glitching from high-frequency pitch changes.
+PR #5545: Pitch Detection Algorithm (Merged) — Implemented an
+autocorrelation-based pitch detection algorithm for the getTunerFrequency
+function.
+PR #5447: Epsilon Frequency Comparison (Merged) — Replaced exact
+floating-point equality checks with epsilon-based comparisons for frequency
+matching, fixing subtle pitch-matching issues.
+
+Memory Leak Fixes
+PR #5599 and #5601: Event Listener Leaks (Both Merged) — Systematically
+identified and patched listener accumulation in the Trash View, Block Context
+Menu, and new-project flow. Together these reduced heap growth and prevented
+browser out-of-memory crashes during long classroom sessions.
+
+Architecture and Refactoring
+PR #5132: Hot-Reload Theme Switching (Merged) — Re-engineered the theme
+engine to enable instant visual switching without having to reload the browser.
+Eliminated redundant network requests and state resets.
+PR #5662: Extract CameraManager Module (Merged) — Refactored the camera
+logic into a separate module for better architectural integrity.
+PR #5670: Chrome CSP Violation Fix (Open) — Refactoring the plugin system to
+conform to content security policy requirements for modern browsers.
+
+9
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+PR #5574: Hot-Swap Language Change (Open) — Implementing runtime
+language switching without having to reload the page.
+
+Testing and Quality
+PR #5468: Unit Tests for getPitchInfo (Merged) — Completed comprehensive
+unit tests for pitch calculation functions with edge case coverage.
+PR #5663: Error Scope Validation in AST2BlockList Tests (Merged) —
+Strengthened test assertions for the AST to block conversion process.
+
+Other merged contributions include input validation, null safety, cleanup,
+notation, documentation, and other improvements from 7 PRs, i.e., #4832,
+#5740, #5686, #5081, #5295, #5575, #5546, #5517, #5472.
+
+Contributions to Speak-AI (3 Open, 1 Superseded)
+In addition to reviewing the codebase, I have also made four pull requests to
+Speak-AI.
+PR #107: Stop Reloading the SLM Model Every Prompt (Open) - The SLM model
+was reloading on every prompt, resulting in multi-second delays. This pull
+request caches the loaded model so that it doesn’t reload on subsequent
+prompts.
+PR #109: Stop Kokoro Voice Switch from Freezing the UI (Open) - Switching
+voices in Kokoro resulted in freezing of the UI. This pull request switches the
+voice embeddings in a background thread so that it doesn’t freeze the UI.This is
+related to the thread safety section in 2.1, where I have achieved thread safety in
+the GStreamer pipeline by using the same threading mechanism to switch the
+GStreamer pipeline.
+PR #116: Ignore Stale AI Replies from Older Requests (Open) - This is for when
+the user sends multiple requests in rapid succession, and the old response is
+received after the newer one. This PR adds a sequence ID to requests and ignores
+stale callbacks.
+PR #26: Add Language Aliases for Arabic, Swahili, Kinyarwanda, and Guarani
+(Superseded) - Initial language alias registration. This has been superseded by
+the more comprehensive solution proposed in this document.
+
+10
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Proof of Concept — Cross-Lingual Transfer:
+As a precursor to writing this proposal, I ran the cross-lingual
+transfer experiment which Week 4 is meant to verify in a
+formal capacity. I wished to verify whether this route is worth
+pursuing in the first place, or if it is a dead-end from the
+outset.
+
+Inputting Arabic text into espeak-ng yielded IPA phonemes,
+which were then processed by KPipeline using two Kokoro
+embeddings: af_bella (English) and hf_alpha (Hindi).
+
+The Hindi one clearly yielded more recognizable vowels.
+Neither one managed a quality score above 3/5. Piper’s
+ar_JO-kareem-medium, when used as a baseline, clearly
+outperformed both.
+
+This serves as a pre-verification of Piper as the correct Arabic
+backend and ensures that the system actually works in
+practice and not just in theory.
+
+A demo video of this experiment is set to be circulated on the
+sugar-devel mailing list as a follow-up to this proposal.
+
+11
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Project Overview
+Speak-AI is an advanced version of the traditional 'speak' activity developed by
+Sugar Labs.
+This new version replaces the traditional 'espeak' engine with an
+82-million-parameter neural TTS model named 'Kokoro,' which provides
+natural-sounding and human-like speech, an upgrade that is greatly beneficial to
+children learning languages and improving reading skills.
+The current version of 'Kokoro' supports eight languages: English, Spanish,
+French, Hindi, Italian, Brazilian Portuguese, Japanese, and Mandarin.
+This means there are hundreds of millions of children whose native language is
+not among them: Arabic, Swahili, Kinyarwanda, Quechua, Guarani, and Aymara,
+among many others.
+This project extends the multilingual support of Speak AI to include these
+underserved languages.
+As natural-sounding speech is a priority for auditory learning, the quality of
+pronunciation is the first priority of each decision made by this proposal.
+
+Project Goals
+1.​ Multilingual TTS Expansion: Enhance existing support for Spanish,
+Brazilian Portuguese, Hindi, French, and Mandarin. Add six underserved
+languages: Arabic, Swahili, Kinyarwanda, Quechua, Guarani, and Aymara.
+2.​ Pronunciation Quality: Extend G2P, explore TTS backends for
+languages unsupported by Kokoro, and develop a scored evaluation system
+with test data for each language.
+3.​ Performance Optimization: Investigate ONNX Runtime for CPU
+inference speedups and integrate existing but unused audio cache to avoid
+redundant inference for repeated audio.
+4.​ Offline-First Model Management: Create ModelManager: check local
+cache, validate SHA-256 hashes for downloads, and use existing but
+unused audio cache to fall back to espeak if a model is unavailable to
+ensure activity always produces audio, even without internet.
+5.​ Community Validation: Implement three native speaker review
+checkpoints (Weeks 2, 6, 11), using a scored rubric, involving native
+speakers from the Sugar Labs mailing list, Kinyarwanda Wikimedians, and
+OpenStreetMap contributors for Arabic.
+
+12
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Before and After Pipeline Comparison:
+
+Current Pipeline (which doesn’t work for most
+languages):
+Student types in their language → Attempt to read with eSpeak-ng → Robotic,
+wrong pronunciation
+
+After this project:
+Student types text → speech.py looks in the cache → Cache miss? Yes/No →
+Language-specific backend selection (Kokoro G2P available, Piper for
+Arabic/Swahili, MMS for indigenous) → audio with GStreamer → Natural
+speech in the child's language Cache hit? Yes/No → Sub-millisecond response
+with no inference required.
+
+13
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Current Architecture
+How Speak-AI works today:
+If a child types something and hits enter, the following happens:
+The Gtk.Entry widget from activity.py calls face.View.say(text), which calls
+Speech.speak() from speech.py.
+The system first checks if Kokoro is present.If it is,
+_ensure_kokoro_lang() from activity.py chooses the appropriate G2P model for
+the language of the selected voice, and KPipeline.call() from kokoro/pipeline.py
+converts the text into IPA phonemes.
+The phonemes, along with a voice embedding, are then converted into raw
+24kHz audio by KModel.forward() from kokoro/model.py.
+If Kokoro is not present, it goes straight to GStreamer espeak.
+In both cases, it goes into a GStreamer pipeline, where it splits into two sinks:
+autoaudiosink for speaker, and fakesink (16kHz S16LE) for the mouth animation
+of the face widget.
+
+14
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+The pipeline explained:
+1.​ activity.py — GTK UI. Child writes to Gtk.Entry, which triggers
+face.View.say(text)
+2.​ speech.py — Routing. Speech.speak() determines whether to use Kokoro
+or espeak. If Kokoro is present, it will call _ensure_kokoro_lang() to
+change the language of the G2P model according to the language of the
+voice selected
+3.​ kokoro/pipeline.py — G2P + synthesis. KPipeline does text →
+phonemes using either misaki (for English, Japanese, Chinese) or
+espeak-ng (for everything else), then feeds phonemes and voice
+embedding to KModel
+4.​ kokoro/model.py — Neural network. KModel does phonemes → 24kHz
+F32 WAV using the phoneme string and a 256-dimensional voice
+embedding tensor
+5.​ GStreamer — Audio is pushed using appsrc, split using tee to
+autoaudiosink (speakers) and fakesink (mouth animation, S16LE 16kHz)
+
+Why this approach is the right one for 90 hours
+One thing to consider with a multilingual TTS project is whether the time is best
+spent writing new language support from scratch, or whether the time is best
+spent making the existing code work. This proposal takes the obvious route: the
+building blocks are in the repository. alt_tts_backends.py, tts_cache.py, and
+KModelForONNX are fully written, well-organized, and never imported. The
+fallback chain that the architecture diagram refers to has never been executed.
+The child who chooses Swahili today is met with silence or broken audio not
+because the answer doesn't exist in the code, but because it was never wired in.
+The problem of implementing new G2P rule systems from scratch for a language
+a contributor cannot natively evaluate is a research problem, not a 90-hour
+engineering solution. Implementing phoneme rules incorrectly for Arabic or
+Kinyarwanda without access to a native speaker for verification is not an option
+because the output will be worse than the existing espeak fallback it is intended
+to replace. The approach of this proposal is different. Integrate what exists,
+measure what works, validate by listening to it, and document what doesn't so
+that others can improve it. This is a promise of a solution that will work. The
+quality of the pronunciation is data-driven, not data-based.
+
+15
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Current Codebase Audit
+A careful analysis of the codebase shows that there is a disconnect between what
+is written and what is currently working. The codebase is in three different
+states:
+1. Implemented but Dead Code
+1.​ alt_tts_backends.py: The code is fully implemented but has never been
+imported in speech.py. The fallback chain is dead code.
+2.​ tts_cache.py: The code is fully implemented but has never been
+imported anywhere in the codebase. The cache is dead code.
+3.​ KModelForONNX / CustomSTFT: The wrappers are implemented
+and disable_complex=True is supported, but there is no export script and
+no benchmarks.
+2. Implemented but Untested
+1.​ VOICE_PREFIX_TO_LANG mapping in speech.py: The code is
+fully implemented but has never been tested against actual non-English
+text.
+2.​ _ensure_kokoro_lang(): The code is correctly implemented and fixes
+the bug where all voices defaulted to the English G2P backend.
+
+3. Missing entirely
+1.​ Language aliases: Kinyarwanda (rw) and Aymara (ay) are missing from
+ALIASES.
+2.​ Personas: Swahili persona exists but uses af_heart (English voice).
+Arabic, Quechua, Guarani, Kinyarwanda personas are missing.
+3.​ Native speaker evaluation: rubric.md exists but there are no WAV
+files, scores, or community feedback.
+What this means
+The building blocks are already in the repository.
+My contribution is integration, testing, and validation wiring up the cache and
+fallback logic into the main execution path, generating and benchmarking the
+ONNX export, and getting the generated audio in front of native speakers.
+
+16
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+The end result should be a set of disconnected scripts turned into a usable,
+deployable TTS engine.
+
+Technical Approach:
+
+The Core Problem
+Kokoro is a language-blind neural model at the acoustic level.It takes IPA
+phonemes and a voice embedding as input and produces audio.
+The voice embedding is the source of the sound of a language. This is the crucial
+architectural point that informs the approach for all languages.
+Languages with full Kokoro support (Spanish, French, Hindi, Portuguese,
+Mandarin, Japanese, Italian, English)
+The G2P routes and voice embeddings are already existing code. This is not
+implementation; this is quality assurance.We want the pronunciation to be
+phonetically correct and educationally sound, not just computationally correct.
+Languages with G2P but no voice embedding (Arabic, Swahili,
+Kinyarwanda)
+For these languages, espeak-ng is able to output IPA phonemes.
+However, Kokoro does not have a voice embedding model for any of them. The
+process is cross-lingual transfer, where Arabic phonemes are passed through a
+voice embedding model for a language such as Hindi.
+The intelligibility of the output is up for empirical testing.
+I will test all available voice embeddings against the scoring rubric and make the
+backend decision based on the results in Week 4. If none of the embeddings have
+a score above 3/5, Piper TTS is the backend for the language.
+Languages with no coverage anywhere (Quechua, Guarani, Aymara)
+These languages are not supported by Kokoro voice embeddings and, in general,
+don't have good open-source TTS support.
+
+17
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+For these, I plan to utilize the Meta MMS-TTS, which includes VITS models
+specific to language, approximately 60MB in size, CPU only, and 16kHz output.
+The training data is limited, only containing Bible recordings, and the acoustic
+quality will be lower than Kokoro. However, intelligible speech in the child's
+native language is better than nothing.
+
+Proposed Implementation:
+1.Wire the Alt Backends into speech.py
+The file alt_tts_backends.py contains the definitions for MMSTTSBackend,
+PiperBackend, and the routing function get_tts_backend().
+Not a single line from this file is imported into speech.py.
+The fallback chain that is apparently working is completely unused. There is an
+important change needed from the current design.
+The routing for backends will need to be based on the language derived from the
+persona or voice selection, not self._kokoro_lang.
+This is because _kokoro_lang is derived from the currently selected Kokoro
+voice prefix, which does not necessarily exist at all for a Tier 3 language persona.
+The correct routing is:
+
+18
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+How _resolve_requested_lang() works:
+This function maps whatever voice is currently selected to a BCP-47 language
+code for backend routing. It checks three things in order:
+First, it looks for an explicit lang field in personas.json. Tier 3 personas like
+Quechua have no Kokoro voice at all, so they carry their language directly:
+{"name": "Inti", "lang": "qu", "backend": "mms"}. This bypasses all prefix logic.
+Second, it extracts the Kokoro voice prefix and looks it up in the existing
+VOICE_PREFIX_TO_LANG dict already in speech.py — af_ maps to en, hf_ to
+hi, ef_ to es, and so on.
+Third, if neither of those works, it returns "en" as a safe default. It never raises an
+exception and never returns None.
+The return value goes directly to get_tts_backend(lang), which checks the
+preference array in alt_tts_backends.py and returns the highest-priority
+available backend for that language.
+This wiring also requires a new _stream_alt_audio() method in the speech.py
+file, which will deal with the differing sample rates of the backends.
+The sample rates are 24kHz for Kokoro, 22050Hz for Piper, and 16kHz for
+MMS-TTS. The existing stream_kokoro_audio() function hardcodes the
+GStreamer appsrc caps string as
+'audio/x-raw,format=F32LE,rate=24000,channels=1'.
+When 16kHz audio is provided, it will not only be distorted but can also trigger a
+GStreamer negotiation error.
+The new _stream_alt_audio() function will need to dynamically generate this
+caps string from the reported sample rate of the backend, and I will check in
+Week 5 whether autoaudiosink can deal with the differing sample rates internally
+or whether an audioresample filter is required before the autoaudiosink.
+Thread safety is managed through draining the current thread’s pipeline with an
+EOS signal prior to switching, using a threading.Lock(). We’re switching between
+utterances, never mid-utterance, so there’s no risk of tearing a buffer.
+Before considering this integration finished, there’s a further set of corrections to
+be made to the Piper voice IDs in alt_tts_backends.py. A few of those IDs are
+outdated placeholders for voices that don’t actually exist in the
+currentrhasspy/piper-voices registry.
+
+19
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+The ones verified on March 29, 2026, are correcting
+ar_AR-ibrahimkamal-medium to ar_JO-kareem-medium,
+sw_SW-lanfrica-medium to sw_CD-lanfrica-medium, andhi_IN-gv-medium to
+hi_IN-priyamvada-medium. These corrections will be included in the first Piper
+backend PR.
+
+2.Wire Cache into speech.py
+The tts_cache.py file includes a complete implementation of an LRU cache with
+SHA-256 keying and disk persistence.
+This code is not imported anywhere in the project.To integrate this into
+_stream_kokoro_audio(), three changes are required:
+
+The module already deals with all other aspects such as key hashing, file
+input/output, and the like. The above three lines are the only changes that the
+speech.py module requires.
+
+3.Add Missing Language Registrations
+In the code, the file kokoro/pipeline.py is missing two language
+registrations that were identified in the code audit.
+
+20
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+The two letters, 'w' and 'y', have been confirmed to be unoccupied in the
+ALIASES and LANG_CODES dictionaries:
+
+The only addition necessary to route Kinyarwanda and Aymara through the
+existing espeak-ng G2P pipeline in KPipeline is the addition of these two
+entries.
+The question of whether the output is usable is the empirical result of
+Week 4.
+
+4. Test Cross-Lingual Voice Transfer
+For the languages like Arabic, Swahili, and Kinyarwanda, there is no
+support for Kokoro voice embeddings.
+However, since Kokoro is language-independent and depends on IPA
+phonemes through espeak-ng, we will also check its performance for these
+languages against the Piper TTS fallback.
+
+21
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Evaluation Strategy:
+This is purely a data-driven evaluation, and we will perform it in Week 4:​
+Sample Generation: We will generate the samples for the languages
+using all available Kokoro voice embedding families.Human-in-the-Loop
+Evaluation: We will ask the community to perform the evaluation for the
+samples received in the previous step, following a standard rubric for
+pronunciation evaluation.
+Decision Logic: If a Kokoro voice family gets a score of greater than or
+equal to 3/5 from the community, then it will be chosen for the language.
+If none of the Kokoro voice transfer paths receive a score greater than or
+equal to 3/5, then Piper TTS will be used for the language.
+The final architecture for these languages will be determined by the quality
+results received, not by compatibility.
+
+5. ONNX Export
+The code in kokoro/model.py where we define KModelForONNX is already
+complete, but we have yet to finish the ONNX export script and its
+performance benchmarks.
+Technical Approach
+
+The key to ONNX model export is passing `disable_complex=True` as an
+argument in the initialization of `KModel`. This argument will swap out
+TorchSTFT with CustomSTFT in the model’s decoder, as `torch.istft`
+cannot be traced by ONNX due to its handling of complex numbers.
+
+22
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Below is an outline of how we plan to implement the ONNX export script:
+
+Week 8: Go/No-Go Decision
+This is where we will make a final determination on how we will implement
+ONNX model export:
+If successful: Benchmarks will be run to compare torch and ONNX
+model latency on both x86_64 and ARM architectures.
+If not successful: The failure and errors encountered will be noted in
+this document, and all remaining time allocated to this project (8 hours)
+will be used to improve pronunciation quality.
+
+6. Unicode and Script Specific Handling
+To accommodate diverse scripts, specific handling strategies need to be
+developed for text preprocessing, G2P translation, and UI display.
+The strategy for handling different language groups is explained in detail in
+the following points:
+
+23
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Text Normalization — applies to all languages before G2P
+Children don't type clean prose. A normalize_text(text, lang_code)
+function in speech_utils/normalizer.py will preprocess all input before it
+reaches any G2P engine. Without this, input like "मेरा roll no. है 42" or "٣
+‫ "طالب في الفصل‬reaches the G2P raw and produces wrong phonemes or silent
+failures.
+Hindi:
+Arabic numerals expand to Hindi word form using num2words(lang='hi'),
+NFC normalization applied, zero-width joiners stripped.
+Arabic:
+Arabic Indic numerals like ٣ expand to word form, convert Arabic Indic
+numerals to Western digits, apply NFC normalization.
+Quechua and Guarani:
+NFC normalization is important because ejective apostrophes (qʼ, kʼ), and
+tilde vowels can be represented as decomposed characters. Without NFC
+normalization, the tokenizer will tokenize them incorrectly, and the G2P
+output is garbage.
+Fallback:
+If num2words fails on unknown numerals, the raw digits pass through
+unchanged. espeak-ng handles isolated digits acceptably in all languages
+we support, so this will never cause silence.
+
+Code-Switching Detection:
+The "Hindi-English mixed" text "मेरा name है Rahul" is a very common
+phenomenon in an Indian classroom, and this will be one of the most
+frequent input types for a Hindi user. Processing mixed-script text through
+a single G2P system will result in incorrect phonemes for the unsupported
+script.
+Detection approach: Unicode block majority-vote per word.
+
+24
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Words will be detected based on a majority vote of the dominant script.
+"DEVANAGARI" will be mapped to "hi," "LATIN" to "en," and "ARABIC"
+to "ar." Code segments with different scripts will be synthesized separately
+using respective backends. The resulting audio arrays will be concatenated
+with a 50ms silence inserted at each language boundary before being sent
+to GStreamer.
+Known limitation: English words written in Devanagari, such as "टे बल,"
+will be sent to the Hindi backend.
+This limitation is acceptable because espeak-ng works reasonably well for
+common English loan words written in Devanagari.
+Arabic (Right to Left):
+Processing & Display: G2P translation in Espeak NG takes care of
+right-to-left text handling at the phoneme level. GTK/Pango also supports
+right-to-left text display.
+
+Action Item: Confirm that the Gtk.Entry widget in activity.py changes
+text direction correctly in response to Arabic text entry because this is not
+necessarily automatic in all GTK configurations.
+Hindi (Devanagari)
+Known G2P Issue: The biggest issue with G2P translation in Espeak NG
+for Hindi is incorrect Schwa deletion – i.e., deletion of inherent 'a' vowel in
+specific phonological environments.
+The fix is a word-final schwa deletion pre-processing step, implemented
+in normalizer.py. It inserts a halant (U+094D, the explicit vowel
+suppressor) before espeak-ng processes the text, based on a lookup against
+a manually validated exceptions list. Luckily, as a native Hindi speaker, I
+can construct and validate such a list myself, without a dataset to inform
+me when "राम" should be /raːm/ and not /raːmə/.
+Conservative approach: if we're unsure, we're not inserting a
+halant. A wrong schwa will sound a bit odd, but will still be
+
+25
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+understood. A wrong consonant will sound "broken." So, we
+default to "do nothing."
+This will be tested in Week 3's native speaker checkpoint with
+our 18 sentence Hindi test corpus.
+
+Mandarin (CJK Characters)
+Processing: G2P translation in Mandarin is handled by misaki[zh].
+Action Item: Testing will be restricted to tone sandhi – i.e., ensuring two
+consecutive third tones correctly resolve to second-third tone – and
+polyphonic character readings.
+Quechua and Guarani (Extended Latin)
+Processing: These scripts make heavy use of apostrophes for ejectives
+and tildes for altered vowels.
+Preprocessing Requirement: This script requires strict preprocessing
+to normalize to NFC prior to tokenization. This is to prevent the tokenizer
+from incorrectly splitting the text.
+
+7.Offline First Model Management:
+A ModelManager will be created based on this decision tree: check cache
+for a model, try to download if a model is not cached, check SHA-256 hash
+of what has beendownloaded, and use espeak with a notification to the user
+if anything fails.
+This ensures that speech will always be produced. There is never a
+situation where a child will click on Speak and nothing will be produced.
+
+The models will be downloaded lazily: only after a user selects a
+language persona for the first time that requires a backend not cached
+locally.
+Downloads write to a .tmp path. After successful download, SHA-256 of
+.tmp is verified against MANIFEST.json.
+
+26
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+On successful download: atomic rename .tmp to .onnx. This is atomic
+under Linux/POSIX: either the full verified model exists at the target path,
+or it does not exist at all. There is no half-written model that the activity
+could mistakenly read.
+On failure or interruption: .tmp is immediately deleted, failure logged
+to ~/.local/share/speak-ai/download_errors.log, and the activity reverts to
+espeak-ng but does not crash. A single retry is scheduled for the next time
+the activity is launched via a pending_downloads.json flag. The user sees a
+GTK notification: "Voice download incomplete. Will retry when
+connected."
+Model versioning: MANIFEST.json is in the repository, and every model
+is pinned to SHA-256 hash plus upstream version. Changing a model
+requires a reviewed Pull Request. No auto-updating: a surprise 300MB
+download during a lesson on a school machine is not acceptable.
+Model versioning strategy: When a new voice pack is released by Piper
+or Kokoro updates are released, ModelManager needs to be aware of this.
+MANIFEST.json is checked into source control and specifies all models by
+SHA-256 hash and upstream version. When a user wants to update a
+model, a PR is created updating MANIFEST.json with the new hash and
+URL. ModelManager will notice this on next launch and prompt the user to
+update. This is a deliberate process and not automatic, which is good for
+schools where bandwidth is limited and updating in the middle of a class is
+a problem.
+
+Technical Justifications
+The section numbers below correspond to the content in "Proposed
+Implementation" above.
+2.1 Why the Alt Backend Wiring Matters
+The first thing that struck me when reading the codebase is that
+alt_tts_backends.py is fully implemented but never imported.
+It includes MMSTTSBackend, PiperBackend, and get_tts_backend().
+
+27
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+The fallback chain described in the proposal’s architecture never actually
+runs. This isn’t a design gap; the modules are properly built. It’s a wiring
+gap, and this is where the value of this project really lies.
+The reason this matters so much is that Kokoro's approach is
+language-agnostic at this acoustic level. It's taking in IPA phonemes and a
+voice embedding and producing audio.
+The voice embedding is what provides the acoustic characteristics of the
+final output, not the language.
+So, if I provide it with Arabic phonemes generated by espeak-ng and a
+Spanish voice embedding, it will have no idea what Arabic is supposed to
+sound like.
+The result will not be Arabic spoken with a Spanish accent. The result will
+be audio that doesn't even resemble a language. This is why the fallback
+chain is not optional for Tier 2 and Tier 3 languages—it's the only option.
+
+For the Quechua, Guarani, and Aymara languages, no Kokoro voice
+embeddings are available at all.
+Meta's MMS-TTS has VITS models available for these languages,
+pre-trained on Bible recordings and similar data.
+The naturalness is lower because the data is limited, but speech that is
+intelligible at 2.5/5 is much more useful to a child in Cusco than speech
+that is completely unintelligible.
+For the Arabic and Swahili languages, the preferred Piper TTS is the
+non-Kokoro fallback because it is ONNX-based, runs completely on CPU,
+and has a maintained pack in the voice registry with file sizes listed.
+The sample rate engineering problem is a real and non-trivial one.
+Kokoro outputs at 24kHz. Piper outputs at 22050Hz. MMS-TTS outputs at
+16kHz.
+The current GStreamer pipeline in the stream_kokoro_audio() function
+has the caps string hardcoded to 'rate=24000'.
+
+28
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+If the function is given 16kHz input, it could either output pitch-shifted and
+time-stretched audio or fail to negotiate the caps, depending upon the
+behavior of the GStreamer library.
+The _stream_alt_audio() function must construct the caps string from the
+actual sample rate of the backend.
+Whether or not autoaudiosink performs resampling internally will be
+verified in Week 5, as it depends upon the version of the plugin present in
+the target system.
+Thread safety is achieved by draining the active pipeline using EOS before
+switching and protecting the pipeline reference using a threading.Lock().
+Since language switching only occurs between utterances, there is never an
+active audio buffer that is split mid-stream.
+
+2.2 Why the Cache Is Not Optional
+The tts_cache.py module is fully implemented with correct LRU logic, SHA-256
+keys, and disk eviction, but is currently not integrated with the rest of the system.
+The price of this disconnection is paid in full by every child using this activity on
+classroom machines.
+A 10-year-old child learning to read does not type a sentence, hear it, and then go
+on to another activity.
+No, she types a word, hears it, changes a letter, and then hears it again. This
+small phrase is repeated five or six times in two minutes.
+The current system forces a full Kokoro inference on every single repetition:
+phonemes through the neural network, audio tensors, and GStreamer streaming.
+The wiring of this cache completely eliminates the repetition cost. The key
+generation using SHA-256 hash on the (text, voice, lang_code, speed) tuple
+incurs a completely negligible 0.003 ms cost. The cost of resolving a cache hit,
+which loads a numpy array from local storage, is effectively zero.
+Across different audio clip lengths, we measured:
+
+29
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+0.5-second audio clip (47KB): p50 latency 0.21 ms
+3.0-second audio clip (281KB): p50 latency 0.23 ms
+8.0-second audio clip (750KB): p50 latency 0.33 ms
+The critical piece is that a warm kokoro synthesis on x86_64 takes 1729 ms. By
+serving this audio from the cache, which takes on average 0.25 ms, we get a
+6915x speedup on repeated phrases. On ARM-based classroom machines, where
+kokoro synthesis is significantly slower, this will be a higher number.
+
+Additionally, with this LRU cache, we are assured that disk usage will always be
+strictly bounded (capped at 500 entries or 200 MB), which is a safe choice given
+many older classroom machines will have little storage capacity.
+This takes several seconds per repetition, which makes this interaction look like
+a failure, not a learning tool.
+
+2.3 Testing Cross-Lingual Transfer Before Giving Up on
+Kokoro
+For Arabic, Swahili, and Kinyarwanda, there is no trained Kokoro voice
+embedding.
+Fortunately, Kokoro's acoustic model is language-agnostic: it takes any
+string of IPA phonemes and maps it to audio via a voice embedding. The
+input to the model and the embedding are independent. This is an
+empirical question worth answering before we move on to using Piper:
+do we get recognizable Arabic audio if we give it a string of correct Arabic
+IPA and a Hindi voice embedding, since we know that espeak-ng will
+produce that string?
+This has not been tested for Arabic or Swahili, though. This will be tested
+in Week 4 by generating test audio for each of the three languages using
+every Kokoro voice family, scoring each combination using the
+pronunciation rubric, and making backend decisions based on actual score.
+If at least one voice family has a score over 3/5, then Kokoro is the backend
+for that language, along with the best-performing embedding family.
+
+30
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+If none do, then the preference array in `alt_tts_backends.py` is adjusted
+from `['kokoro', 'piper', 'mms']` to `['piper', 'kokoro', 'mms']` for that
+language.
+This is a change to the configuration, not the logic.
+The motivation for testing this is efficiency. If cross-lingual Kokoro transfer
+is good enough for Swahili,
+then we don't need to add a dependency on Piper or download a 60MB
+voice pack for that language.
+If it is not, then we have hard data on why, not just an assumption.
+
+2.4 The ONNX Export Path
+The target is to achieve a CPU speedup of 2 to 3 times on the hardware in
+the classroom – ARM devices without a GPU.
+However, there is a blocker that has so far not allowed this to be done:
+torch.istft in the iSTFTNet decoder in Kokoro.
+ONNX tracing cannot trace complex numbers, but torch.istft depends on
+complex numbers. However, this issue is already half-solved in the code:
+KModel takes an argument disable_complex=True, in which case it
+replaces TorchSTFT with CustomSTFT.
+This is because CustomSTFT computes the exact same thing using
+F.conv1d and F.conv_transpose1d, which ONNX tracing supports.
+There is already a model in model.py: KModelForONNX.
+But there is no code to write an ONNX export script – this is the 8 hours to
+complete in Week 8.
+The go/no-go with the mentors is at the end of Week 8.
+However, in case tracing fails because CustomSTFT is not enough – in case
+other operations in the model are not traceable – then those 8 hours will be
+used on pronunciation quality, since this is more important per project
+description.
+
+31
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+2.5 Storage, Memory, and Offline Deployment
+The Hugging Face cache for the existing Kokoro-82M model stores
+330,355,132 bytes (315.05 MiB) of blobs, which can be measured locally as
+of March 29, 2026. The largest blob, kokoro-v1_0.pth, is 327,212,226 bytes
+(312.05 MiB).
+The Python environment required for Kokoro, including torch (446.72
+MiB), transformers (90.80 MiB), numpy (33.02 MiB), misaki (14.73 MiB),
+huggingface_hub (4.96 MiB), tokenizers (7.36 MiB), and safetensors (0.81
+MiB), sums to approximately 598 MiB of installed packages.
+The full virtual environment, including pip, setuptools, and other
+dependencies, measures 1,185.48 MiB.
+Now the incremental cost of each additional backend.
+To add the Piper TTS backend, the piper-tts wheel is approximately 13.16
+MiB and onnxruntime is approximately 17.17 MiB, and these sizes are from
+the PyPI page and will be verified locally as part of the community bonding
+process.
+Each voice pack is a single ONNX file, and the Arabic voice pack
+"ar_JO-kareem-medium" is 63,201,294 bytes or 60.27 MiB in size,
+the Swahili voice pack "sw_CD-lanfrica-medium" is also 63,201,294 bytes
+or 60.27 MiB in size, and the Hindi voice pack
+"hi_IN-priyamvada-medium" is 63,516,050 bytes or 60.57 MiB in size,
+and these sizes were verified from rhasspy/piper-voices registry.
+Adding MMS-TTS requires transformers, tokenizers, and safetensors if not
+already installed – which they are in our case for Kokoro.
+The incremental cost of MMS code is therefore negligible.
+
+The incremental cost of MMS models is approximately 145 MB for each
+language checkpoint. This is verified by checking the model sizes for
+facebook/mms-tts-que, facebook/mms-tts-grn, facebook/mms-tts-ayr,
+andfacebook/mms-tts-kin on the Hugging Face model pages.
+
+32
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+The previous estimate of approximately 60 MB for each MMS model in this
+proposal was incorrect. The cost is actually 145 MB for each language
+checkpoint. This has significant implications for our storage budget for
+indigenous language support.
+Downloading a ~60MB Piper model or a ~145MB MMS-TTS checkpoint at
+runtime is not viable on classroom internet
+For our sysadmin at a school who is responsible for allocating disk space
+for our system, the cost for additional languages beyond our base install of
+Kokoro is as follows. For Tier 1 languages – Spanish, French, Hindi,
+Portuguese, Mandarin – we pay nothing extra as these include our voice
+embeddings in our base install.
+For Arabic and Swahili, it’s approximately 90 MiB for the first language,
+which covers our one-time install cost for Piper. For additional languages
+in Piper, it’s 60 MiB each.
+For Kinyarwanda, Quechua, Guarani, and Aymara, it’s 145 MiB each, as
+these share our MMS-TTS code layer that is already included.
+In the worst case scenario in which all the languages in this proposal are
+loaded with the highest-cost backends, the total model assets on disk will
+be around 1.04 GB above the base Python environment. This is why the
+lazy-download by language requirement is non-negotiable – we do not
+want to install 1 GB of model assets that the school will never use.
+
+Memory:
+The calculation of the Kokoro model weights at 82M parameters * 4 bytes
+per parameter gives a floor of around 328 MB resident memory. The actual
+memory usage including run-time buffers, STFT decoder state, and
+GStreamer pipeline overhead will be measured on ARM hardware during
+the community bonding period and documented in the POC document in
+the file tests/evaluation/tts_footprint_poc.md.
+
+33
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+The question of whether the device with 1 GB RAM can hold the Kokoro
+and one MMS model at the same time will be answered in this document. If
+it cannot be answered in the affirmative, the ModelManager will unload the
+unused backend before loading the requested one.
+
+2.6 Why the Mouth Animation Does Not Break
+The mouth animation subsystem reads S16LE 16-bit PCM audio from the
+fakesink branch of the GStreamer pipeline, which is derived from the peak
+amplitude.
+Kokoro produces F32LE 32-bit audio. If 32-bit audio were to be used by
+the animation code, the byte offsets would be incorrect, resulting in
+random mouth animation with no correlation to the speech.
+The GStreamer pipeline already addresses this issue in a correct manner.
+The pipeline contains a tee element, which splits the signal into two
+branches.
+One branch is sent directly to autoaudiosink at 24kHz F32LE for playing,
+and the other branch is sent through an audioconvert element followed by
+an audioresample element before going to the fakesink at 16kHz S16LE for
+animation. The animation code only receives well-formatted 16-bit data,
+which does not require any changes.
+For the alternative backends, which produce 16kHz or 22050Hz audio, the
+same branch of the pipeline addresses the format difference. The
+audioresample element resamples to 16kHz regardless of what frequency
+the input audio was sampled at.
+
+Cache Performance – Measured Values
+The cache key generation with SHA-256 hash over the tuple ‘(text, voice,
+lang_code, speed)’ was measured at 0.003 ms per call (p50 after 1000
+iterations).
+This value is negligible in comparison with any possible latency during the
+synthesis.
+
+34
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Cache hit latency was measured for storing audio of three different lengths
+in the cache from a local SSD over 50 iterations each. For storing 0.5
+seconds of audio in the form of a 47 KB numpy array, the p50 was
+measured at 0.21 ms and p95 at 0.41 ms.
+For storing 3 seconds of audio in the form of a 281 KB numpy array, the
+p50 was measured at 0.23 ms and p95 at 0.51 ms.
+For storing 8 seconds of audio in the form of a 750 KB numpy array, the
+p50 was measured at 0.33 ms and p95 at 0.48 ms.
+The measurements were done on the Linux platform with a local SSD.
+The cache performance with ARM and SD card storage will be measured
+during the community bond.
+The Kokoro synthesis latency to compare with these figures, cold start
+time, warm synthesis p50, peak RSS, and resulting speedup ratio, is
+dependent on Kokoro and torch being installed.
+These figures will be gathered with the profiling script running on the
+Windows dev machine and inserted into this section and the POC
+document prior to submission.
+These are represented in the main proposal table with placeholders for
+these upcoming figures.
+
+2.7 Exact Footprint Budget and POC Plan
+
+Measured baseline (x86_64 Windows dev environment, March 29, 2026)
+
+Component
+.venv total
+
+Size (MB)
+1185.48
+
+Notes
+Full Python environment
+
+35
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+torch
+
+446.72
+
+Dominant runtime
+dependency; already
+required by Kokoro
+
+transformers
+
+90.80
+
+Required for MMS-TTS;
+incremental cost if not
+already present
+
+numpy
+
+33.02
+
+Already present for
+Kokoro
+
+misaki
+
+14.73
+
+Kokoro G2P support;
+already present
+
+tokenizers
+
+7.36
+
+MMS-TTS tokenizer
+support
+
+huggingface_hub
+
+4.96
+
+Already present for
+Kokoro
+
+safetensors
+
+0.81
+
+MMS checkpoint format
+
+piper-tts wheel (PyPI)
+
+13.16
+
+From PyPI package page
+— not yet installed locally
+
+onnxruntime Linux x86_64
+(PyPI)
+
+17.17
+
+From PyPI package page
+— required by piper-tts
+
+Piper engine subtotal
+
+30.33
+
+piper-tts + onnxruntime,
+before any voice model
+
+HuggingFace cache total
+
+630.60
+
+Current local cache
+
+hexgrad/Kokoro-82M blobs
+
+315.05
+
+Actual Kokoro model
+blobs
+
+Largest Kokoro weight blob
+
+312.05
+
+kokoro-v1_0.pth
+
+Note on the rows for piper-tts and onnxruntime: these sizes are taken from
+the package pages on PyPI, not from a local installation. They are clearly
+marked as such. They will be replaced with actual values from the POC as
+part of the community bonding.
+
+36
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Key insight: torch (446 MiB) is already paid for by Kokoro. The actual
+incremental code cost of MMS-TTS is transformers + tokenizers +
+safetensors = ~98.17 MiB. The actual incremental code cost of Piper is
+piper-tts + onnxruntime = ~30.33 MiB. The costs for individual language
+models are separate and are listed below.
+
+Refreshed Piper voice registry
+
+Language
+
+Stale ID in code
+
+Corrected current ID
+
+.onnx file size
+
+Arabic
+
+ar_AR-ibrahimkamal
+-medium
+
+ar_JO-kareem-medium
+
+60.27 MiB
+
+Swahili
+
+sw_SW-lanfrica-medi sw_CD-lanfrica-medium 60.27 MiB
+um
+
+Hindi
+
+hi_IN-gv-medium
+
+hi_IN-priyamvada-medi
+um
+
+60.57 MiB
+
+Spanish
+
+es_ES-davefx-mediu
+m
+
+es_ES-davefx-medium
+
+60.27 MiB
+
+French
+
+fr_FR-siwis-medium
+
+fr_FR-siwis-medium
+
+60.27 MiB
+
+Portuguese
+(BR)
+
+pt_BR-faber-medium pt_BR-faber-medium
+
+60.27 MiB
+
+Chinese
+
+zh_CN-huayan-medi
+um
+
+60.27 MiB
+
+zh_CN-huayan-medium
+
+Sizes are based on the rhasspy/piper-voices registry file listing (March 29,
+2026). Each voice also includes a small .json config (~5 KB) and model
+card (~300 bytes). The stale IDs will be fixed in the first piper backend PR
+(Week 5).
+
+Per-language incremental disk cost for school deployment
+planning:
+A sysadmin should be able to understand this:
+
+37
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+"What if I add only Arabic? How much extra disk space will I need
+beyond the base Kokoro install?"
+Base install already required by current Speak-AI:
+
+Component
+
+Size
+
+Kokoro blobs
+
+330,355,132 bytes (315.05 MiB)
+
+torch + numpy + misaki +
+huggingface_hub
+
+~499 MiB
+
+Base total
+
+~814 MiB
+
+Incremental cost per language beyond the base install:
+
+Language
+
+Backend 1-time engine
+cost
+
+Per-language
+model
+
+Total
+incremental
+
+Spanish
+
+Kokoro
+
+0 (already loaded)
+
+0 (bundled in
+Kokoro)
+
+~0 MB
+
+French
+
+Kokoro
+
+0
+
+0
+
+~0 MB
+
+Hindi
+
+Kokoro
+
+0
+
+0
+
+~0 MB
+
+Portuguese
+(BR)
+
+Kokoro
+
+0
+
+0
+
+~0 MB
+
+Language
+
+Backend 1-time engine
+cost
+
+Per-language
+model
+
+Total
+incremental
+
+Arabic
+
+Kokoro
+
+0
+
+~0 MB
+
+0
+
+38
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+(Kokoro
+transfer ≥
+3/5)
+Arabic
+(Kokoro
+transfer <
+3/5)
+
+Piper
+
+~30 MiB one-time
+for
+piper+onnxruntime
+
+ar_JO-kareem- ~90 MiB first
+medium = 60.27 Piper lang;
+MiB
+~60 MiB each
+additional
+
+Swahili
+
+Piper
+
+0 if Piper already
+installed
+
+sw_CD-lanfrica- ~60 MiB
+medium = 60.27
+MiB
+
+Kinyarwand MMS-TTS ~98 MiB one-time
+facebook/mms-t ~243 MiB
+a
+for
+ts-kin = ~145
+first MMS
+transformers+token MiB
+lang; ~145
+izers+safetensors
+MiB each
+additional
+Quechua
+
+MMS-TTS 0 if MMS already
+installed
+
+facebook/mms-t ~145 MiB
+ts-que = ~145
+MiB
+
+Guarani
+
+MMS-TTS 0 if MMS already
+installed
+
+facebook/mms-t ~145 MiB
+ts-grn = ~145
+MiB
+
+Aymara
+
+MMS-TTS 0 if MMS already
+installed
+
+facebook/mms-t ~145 MiB
+ts-ayr = ~145
+MiB
+
+Practical read: The school which only requires the additional of Arabic and
+Swahili (Piper path) requires an additional 90 + 60 = 150 MiB beyond the
+base install.
+The school which requires all four of the indigenous languages requires an
+additional 243 + 145 + 145 + 145 = 678 MiB beyond the base install.
+
+39
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Project-scoped worst case:
+If all backend assets that pertain to languages in this proposal are downloaded:
+1)​ Kokoro cache (which is already required): 330,355,132 bytes
+2)​ Piper for Arabic + Swahili: ~126,413,115 bytes
+3)​ MMS-TTS for Kinyarwanda + Quechua + Guarani + Aymara: ~580 MB
+
+Backend-assets lower bound: ~1.04 GB. If Arabic + Swahili also fall through to
+MMS as a second fallback, we'd be at ~1.33 GB total backend assets.
+And if we include the full Python environment:
+The machine is already at ~1.16 GiB for .venv + 315.51 MiB for the Hugging Face
+cache before any Piper or MMS asset is even added. The realistic "everything
+installed" case is far above 2 GiB. That is exactly why we need to stay in
+lazy-download by language, with admin-side prefetch for school images.
+
+Full-backends ceiling (all models in alt_tts_backends.py
+after refreshing IDs):
+If all Piper and MMS assets registered in the backend registry are ever
+downloaded:
+1)​ Piper medium ONNX weights for ar, es, fr, pt, hi, sw, zh: ~442,723,814
+bytes (~422 MiB)
+2)​ MMS checkpoints for qu, gn, ay, sw, rw, ar: at least 870 MB
+3)​ Kokoro blobs: 330,355,132 bytes
+
+Asset-only ceiling: ~1.64 GB before cache bookkeeping, tokenizer/config files,
+or multiple revisions. This is the upper bound to communicate for total storage
+planning.
+
+ARM Profiling — Committed Delivery
+Physical ARM hardware profiling was not finished prior to the submission
+deadline. Rather than trying to estimate the ARM results from the x86_64
+results, which would be false and misleading, I'm making the following promise:
+
+40
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Results for QEMU ARM64 emulation will be submitted to the sugar-devel
+mailing list within 48 hours of this submission. They will be marked as [QEMU
+emulated]. Real-world results for the Raspberry Pi 4 will be collected during the
+community bonding period and committed to
+tests/evaluation/tts_footprint_poc.md by May 31.
+What the x86_64 44s cold start already tells us is that on ARM with SD storage,
+this will take much longer, which is exactly what the async background load with
+espeak-ng placeholder is the only architecture for which this is possible.
+
+POC: Preliminary measured data (x86_64, March 29,
+2026):
+Cache performance — measured on x86_64 Linux with numpy (actual run,
+50 iterations):
+
+Audio length
+
+File size
+
+Cache hit p50
+
+Cache hit p95
+
+0.5s
+
+47.0 KB
+
+0.21 ms
+
+0.41 ms
+
+3.0s
+
+281.4 KB
+
+0.23 ms
+
+0.51 ms
+
+8.0s
+
+750.1 KB
+
+0.33 ms
+
+0.48 ms
+
+Cache key generation (SHA-256, 1000 iterations): p50 = 0.003 ms — negligible
+overhead compared to any synthesis time.
+Kokoro Synthesis Performance The following metrics were captured via a
+custom profiling script executed on a Windows x86_64 development machine
+(March 30, 2026). These are exact measured values, not estimates. ARM
+profiling will be conducted during the community bonding period.
+
+Measurement
+
+x86_64 Windows
+(measured)
+
+ARM/RPi4 (community
+bonding)
+
+Baseline RSS before
+Kokoro load
+
+30.6 MB
+
+TBD
+
+RSS after Kokoro load
+
+1338.6 MB
+
+TBD
+
+Kokoro load RSS delta
+
+1307.9 MB
+
+TBD
+
+41
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Peak RSS during
+synthesis
+
+1292.5 MB
+
+TBD
+
+Cold start time
+(KPipeline load)
+
+44.23 s
+
+TBD
+
+Warm synthesis p50
+(20-word sentence)
+
+1.729 s
+
+TBD
+
+Audio duration
+produced
+
+4.75 s
+
+TBD
+
+Real-time factor
+
+0.36×
+
+TBD
+
+Cache hit p50
+
+0.25 ms
+
+TBD
+
+Speedup from cache
+
+~6915×
+
+TBD
+
+Once the profiling script is run, all of the TBD cells will be replaced with a
+number and then table will be committed to the repository with the name
+tests/evaluation/tts_footprint_poc.md.
+Note on Real-Time Factor (RTF): An RTF of 0.36× means the system
+generates 4.75 seconds of audio in just 1.72 seconds of wall-clock time. This
+confirms synthesis is significantly faster than real-time playback on x86_64
+(ARM metrics TBD).
+Note on Cache Speedup: The ~6915× speedup (0.25 ms vs 1.72 s) strictly
+applies to repeated or cached phrases. This proves the tts_cache.py integration
+will effectively reduce latency to zero when a child clicks the same word multiple
+times, completely bypassing PyTorch overhead.
+Addressing Hardware Constraints: RAM and Cold Starts:
+The profiling data from the measurements above indicates two key constraints:
+1.33 GB RSS Memory Footprint, as well as a Cold Start of approximately 44
+seconds, including disk I/O operations and model loading.
+1)​ For the 1 GB RAM Device Mitigation, ModelManager will use the
+psutil library to detect available system memory on initialization. For
+devices with 1 GB of RAM (e.g., older XO laptops), loading Kokoro or
+MMS will cause an Out of Memory (OOM) crash. For such devices, heavy
+AI backends are disabled, and the activity defaults to the lightweight
+espeak-ng engine only.
+
+42
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+2)​ UX During Cold Starts: For devices with sufficient RAM (e.g., 2 GB
+RAM + RPi4) but slow CPU/SD cards, waiting 44 seconds for the disk I/O
+operations to complete is unpalatable for a child. For this, ModelManager
+loads the heavy TTS engines asynchronously in the background. When a
+user wants to hear an audio prompt, ModelManager immediately starts
+playing synchronous espeak-ng audio if Kokoro is still loading in the
+background. When the asynchronous loading of Kokoro in the background
+is complete, the user can seamlessly transition to the high-quality
+Kokoro/Piper voice for subsequent audio prompts.
+
+Practical read for school sysadmins:
+— Adding only Arabic + Swahili (Piper path): ~150 MiB beyond base
+— Adding all 4 indigenous languages (MMS path): ~678 MiB beyond base
+— Worst case everything: ~1.64 GB total backend assets
+— Full environment with everything: 2+ GiB including .venv
+This is exactly why all model downloads are lazy by language – nothing installs until a
+child selects that language for the first time. For schools, a sysadmin prefetch process
+will be documented for bulk installation during initial deployment.
+
+ARM and classroom hardware profiling plan:
+The baseline above is from a Windows x86_64 development machine. The target
+is ARM-based classroom hardware, e.g., XO laptops, Raspberry Pi 4, etc. These
+have 1-4 GB RAM and no GPU. Profiling on Raspberry Pi 4 (4 GB RAM model) is
+planned for the community bonding period. No ARM numbers are estimated
+here. Estimating ARM performance from x86_64 numbers without
+measurement is not accurate, and I will not include any numbers in my proposal
+that I cannot explain if I am challenged on how I came up with that number.
+What the ARM profiling will specifically measure:
+1)​ Kokoro cold-start time - The x86_64 number will be measured using the
+above script. The ARM number will be measured directly on the Pi.
+2)​ Peak RSS during Kokoro synthesis - Same measurement, different
+hardware.
+3)​ MMS-TTS + Kokoro co-residency - Can we fit both in 1 GB RAM device, or
+will ModelManager have to unload Kokoro before loading MMS?
+
+43
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+4)​ Piper inference latency - Piper uses ONNX Runtime which has an
+ARM-optimized backend, which we expect to be faster per sentence than
+MMS on the same hardware.
+5)​ Cache hit latency on SD card - np.load() on SD cards is slower than on
+SSD. Does 50% latency reduction apply on ARM storage?
+ARM results will be appended to the second column of tts_footprint_poc.md
+next to the x86_64 results.
+If we cannot get access to ARM hardware during community bonding, we will
+use QEMU ARM emulation on Linux to get some numbers, which we will mark
+clearly as being emulated, with real hardware results in Week 3.
+
+44
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Final Repo Structure after the Project Completion:
+
+45
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Full POC plan for the coding period:
+Disk growth curve:
+1)​ measure base environment + Kokoro cache
+2)​ install piper-tts + onnxruntime, measure delta
+3)​ download each Piper voice one at a time, measure delta
+4)​ install transformers + tokenizers + safetensors, measure delta
+5)​ download each MMS checkpoint one at a time, measure delta
+Memory pressure (psutil.Process().memory_info().rss sampled at 50ms
+intervals):
+1)​ Kokoro only
+2)​ Kokoro + one Piper voice loaded
+3)​ Kokoro + one MMS model loaded
+4)​ Backend-switch scenario: verify no double-load spike
+Latency (time.perf_counter(), 20 runs per scenario, p50 and p95 reported):
+1)​ Cold start (fresh process)
+2)​ Warm synthesis (model already loaded)
+3)​ Cache hit (np.load from disk)
+CPU efficiency (time.process_time() alongside wall clock, ratio = compute vs I/O
+bound):
+1)​ Kokoro synthesis
+2)​ Piper synthesis
+3)​ MMS synthesis
+4)​ ONNX vs PyTorch comparison (Week 8)
+All results are reported in tests/evaluation/tts_footprint_poc.md in fixed table
+format. All methods are fixed and reproducible:
+du for disk, psutil for RSS, time.perf_counter() for latency, and the same list of
+20 words taken from the pronunciation corpus.
+POC runs at:
+1)​ Community bonding: x86_64 baseline + ARM setup
+2)​ Weeks 3–5: rerun after tts_cache.py and alt_tts_backends.py wiring
+3)​ Weeks 8–9: rerun after ONNX export attempt
+
+46
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Pronunciation Evaluation Framework:
+Every change is justified by a number. No subjective "I think it sounds better."
+Test corpus per language: 10 common phrases, 5 difficult-phoneme sentences, 3
+child-targeted sentences (18 total).
+
+Scoring rubric:
+Criterion
+
+1 — Poor
+
+3 — Acceptable
+
+5 — Excellent
+
+Intelligibility Hard to understand Understandable with Clear and easy
+effort
+Naturalness
+
+Robotic / broken
+
+Slightly unnatural
+rhythm
+
+Near-native flow
+
+Phoneme
+accuracy
+
+Multiple errors
+
+1–2 minor errors
+
+All phonemes
+correct
+
+Prosody
+
+Flat monotone
+
+Mostly correct
+contours
+
+Natural rise/fall
+
+There are three review checkpoints for native speaker review in Weeks 2, 6, and
+11. Hindi is evaluated by myself. Arabic, Swahili, and Kinyarwanda are gathered
+from Sugar Labs mailing list, Kinyarwanda Wikimedians, and Open Street Map.
+
+CI/CD Integration
+The PER less-than-15% threshold only prevents regressions if it actually runs on
+every PR. A GitHub Actions workflow will be added in Week 2 that triggers on
+any PR touching kokoro/pipeline.py, speech.py, alt_tts_backends.py, or
+speech_utils/.
+
+What runs in CI: test_language_aliases.py and test_g2p_coverage.py
+using espeak-ng only. These complete in under 100ms and require no GPU or
+torch — standard CI runners handle them fine.
+
+synthesis is too heavy for CI (1.3GB RAM, 44s cold-start), so the CI
+gate validates G2P correctness and routing logic. Synthesis quality is
+the contributor's responsibility to demonstrate.
+
+47
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Objective Benchmarking: Phoneme Error Rate (PER)
+Analysis:
+Although human evaluation rubrics are essential for naturalness evaluation,
+Speak-AI also demands a deterministic, mathematically verifiable metric to
+ensure that there are no regressions in phonetics. For this purpose, I will add an
+automated Phoneme Error Rate (PER) calculation pipeline for each of the
+languages.
+The Validation Harness: I will create a specific script for validation purposes
+(tests/eval_{lang}.py).
+The Calculation: The script will use the newly wired G2P modules on a curated
+100-word validation corpus for each target language. It will then use the
+calculated Levenshtein Distance on the generated IPA transcripts against a
+reference dictionary to calculate the PER.
+The Success Threshold: The specific engineering goal is to achieve a PER of
+<15% against the eSpeak-ng baseline for all Tier 1 languages. By hardcoding this
+into the test suite, we can ensure that each of the newly merged language
+modules brings a quantifiable improvement in pronunciation accuracy before it
+ever sees a student's XO laptop.
+
+Risk Analysis
+Risk: ONNX export fails due to custom ops
+●​ Likelihood / Impact: Medium / ONNX speedup lost.
+●​ Mitigation: CustomSTFT already exists. disable_complex=True avoids
+torch.istft. Week 8 is go/no-go.
+Risk: Cross-lingual Kokoro for Arabic is unintelligible
+●​ Likelihood / Impact: Medium / Arabic has no natural voice.
+●​ Mitigation: ar_JO-kareem-medium (Piper) ready as drop-in fallback once
+registry IDs are refreshed. Decision in Week 4 driven by pronunciation data.
+Risk: MMS-TTS quality for Quechua/Guarani is below acceptable
+●​ Likelihood / Impact: Medium / Indigenous languages stay low quality.
+●​ Mitigation: Document honestly, open issue for community follow-up. Known
+data limitation.
+
+48
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Risk: Native speaker reviewers unavailable
+●​ Likelihood / Impact: Medium / Evaluation lacks ground truth.
+●​ Mitigation: Recruitment from Sugar Labs mailing list + Kinyarwanda
+Wikimedians + OpenStreetMap Arabic team.
+Risk: Model downloads fail in offline classrooms
+●​ Likelihood / Impact: High / Feature unusable where it matters most.
+●​ Mitigation: ModelManager falls back to espeak. Document manual install for
+sysadmins.
+Risk: Piper not packaged for target OS
+●​ Likelihood / Impact: Medium / Piper backend unavailable.
+●​ Mitigation: Packaged for Fedora. On Ubuntu: pip install piper-tts.
+Risk: ARM RSS exceeds 1 GB RAM with two backends loaded
+●​ Likelihood / Impact: Medium / MMS + Kokoro cannot coexist.
+●​ Mitigation: ModelManager unloads inactive backend before loading new one.
+
+Deliverables:
+
+1)​ POC and Profiling Report
+(tests/evaluation/tts_footprint_poc.md): Provides reproducible
+metrics on disk space (full Python stack + cumulative model downloads),
+peak RSS per backend, synthesis latency (cold/warm/cache hit), and CPU
+time on both x86_64 and ARM architectures. Updated in Weeks 3, 5, 8, and
+9.
+2)​ Alt TTS Backends Integration: Integration of alt_tts_backends.py with
+speech.py with Piper registry ID corrections and multi-sample rate
+GStreamer.
+3)​ Audio Cache Integration: Integration of tts_cache.py with speech.py.
+4)​ Language Registration Completion: Completion of Kinyarwanda (rw)
+and Aymara (ay) in ALIASES/LANG_CODES.
+5)​ Cross-Lingual Quality Evaluation: Empirical quality evaluation of
+Arabic, Swahili, Kinyarwanda with Kokoro and data-driven backend
+selection.
+
+49
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+6)​ MMS TTS Integration: Speech integration for Quechua, Guarani, Aymara.
+7)​ ONNX Export: Export Script and Benchmarks or Blocker Documentation.
+8)​ ModelManager: lazy download with SHA-256 checksum verification,
+psutil-based RAM detection for disabling heavy backends on devices with 1
+GB of RAM or less, async background loading with synchronous espeak-ng
+placeholder, and sysadmin prefetch process for offline school deployments.
+9)​ Pronunciation Evaluation Framework: Test corpora, WAV generation,
+reproducible scoring.
+10)​UI Updates: Languages in voice palette, multilingual personas in
+personas.json.
+
+11)​CONTRIBUTING_LANGUAGES.md: Documenting guidelines for future
+contributors on adding new languages.
+
+Timeline Total: 90 hours over 12 weeks (~7.5
+hours/week)
+Pre-GSoC Period (March–April 2026)
+●​ Setting up full dev environment: Sugar on Ubuntu, all
+Python dependencies, Kokoro running end-to-end
+●​ Submitting initial PRs to Speak-AI (starting with the
+missing rw/ay alias registration)
+●​ Pre-drafting test corpus sentences for all 10 target languages
+
+50
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+●​ Running the profiling script on Windows dev machine and committing
+real numbers to tts_footprint_poc.md
+
+Community Bonding Period (May 1–31)
+●​ Environment fully confirmed, can synthesize audio for all existing
+languages
+●​ Test corpora committed to the repo
+●​ Verified exact upstream Piper/MMS model IDs and file sizes; corrected
+storage budget in proposal
+●​ Initial POC run: x86_64 profiling complete; ARM (Raspberry Pi 4)
+profiling complete or QEMU baseline if hardware unavailable
+●​ Clarified with mentors: branch naming, PR cadence, WAV file sharing
+workflow
+
+Week 1 (Jun 1–7) — 8 hrs Focus: Verify environment, create test corpora for
+all 10 languages. Exit criteria: End-to-end English synthesis working; all corpus
+files committed.
+Week 2 (Jun 8–14) — 8 hrs Focus: Pronunciation audit for Tier 1 languages
+(Spanish, Portuguese, Hindi, French, Mandarin). Generate WAV files, write
+test_pronunciation.py and test_g2p_coverage.py. First native-speaker
+checkpoint. Exit criteria: Baseline pronunciation scores documented.
+Week 3 (Jun 15–21) — 8 hrs Focus: Integration PR #1 — wire tts_cache.py
+into speech.py. Test lang_code routing with actual non-English text. Hindi
+pronunciation evaluation (native speaker assessment). Exit criteria: Cache
+integration complete; Hindi pronunciation verified.
+Week 4 (Jun 22–28) — 8 hrs Focus: Add missing aliases (rw, ay). Test
+Arabic, Swahili, Kinyarwanda cross-lingual transfer across all voice embedding
+families. Score and decide backend per language. Exit criteria: Backend choice
+made per language based on pronunciation scores.
+Week 5 (Jun 29–Jul 5) — 7 hrs Focus: Integration PR #2 — wire
+alt_tts_backends.py into speech.py. Implement _stream_alt_audio() with
+dynamic caps for multi-sample-rate. Test Piper and MMS end-to-end. Exit
+criteria: At least one Tier 2 language achieves ≥ 3/5 on evaluation rubric.
+Week 6 (Jul 6–12) — 7 hrs [MIDTERM] Focus: Evaluation report for Tier 1
++ Tier 2. Share WAVs with community for native-speaker feedback. Buffer for
+addressing feedback. Exit criteria: Midterm evaluation report submitted.
+
+51
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Week 7 (Jul 13–19) — 8 hrs Focus: Quechua, Guarani, Aymara — test
+espeak-ng path first, integrate MMS-TTS if needed. Implement ModelManager
+with lazy download and offline fallback. Exit criteria: All three indigenous
+languages produce intelligible speech.
+Week 8 (Jul 20–26) — 8 hrs Focus: ONNX export with KModelForONNX
+and disable_complex=True. Benchmark PyTorch vs ONNX on x86 and ARM.
+Go/no-go with mentors. Exit criteria: ONNX export implemented, OR blocker
+documented and hours reallocated to pronunciation quality.
+Week 9 (Jul 27–Aug 2) — 7 hrs Focus: Benchmark and verify cache
+performance target. Polish all integration code for stability. Update
+tts_footprint_poc.md with final numbers. Exit criteria: Cache reduces repeated
+phrase latency by at least 50% on target hardware.
+Week 10 (Aug 3–9) — 7 hrs Focus: UI updates — add new languages to
+voice palette in activity.py. Add multilingual personas to personas.json. Exit
+criteria: All 10 languages available in UI and producing audio.
+Week 11 (Aug 10–16) — 7 hrs Focus: Final community validation round.
+Publish WAVs for all 10 languages. Collect native-speaker scores. Fix flagged
+pronunciation issues. Second native-speaker checkpoint. Exit criteria: All
+languages scored; flagged issues resolved.
+Week 12 (Aug 17–23) — 7 hrs Focus: Documentation. Write
+CONTRIBUTING_LANGUAGES.md. Clean branches. Final PR. Exit criteria:
+Final PR merged or in final review, passing all tests.
+
+Contingency:
+If ONNX export (Week 8) is blocked by the iSTFTNet decoder, those 8 hours are
+reallocated to improving Tier 2/3 pronunciation quality, which is the higher
+priority per the project description.
+
+Time Commitment and Availability:
+Weekly Hours: I plan to spend 8 to 10 hours a week to finish this 90-hour
+small project within the 12 weeks of coding.
+
+Active Hours: I will be active on a daily basis from 9:00 AM to 10:00 PM IST,
+or 3:30 AM to 4:30 PM UTC.
+
+52
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Exclusive Focus: I will not have any conflicting commitments or obligations
+during the GSoC period.
+
+Academic Schedule: My university examinations are scheduled to take place
+in late April and early May. Although I will not know the actual dates until later,
+I will inform my mentors at least two weeks prior to my scheduled examinations.
+
+Progress Tracking and Updates
+Monday Status Reports: I will send a weekly update on every Monday to the
+sugar-devel mailing list.
+
+Friday Code Pushes: I will send diffs to GitHub on a weekly basis every
+Friday.
+
+Mentor Check-ins: I will be present on a weekly sync call with my coding
+mentors at a time that we will decide.
+
+Transparent Communication: I will keep all communication strictly public
+on GitHub and sugar-devel mailing list.
+
+Communication Plan
+●​ Weekly written updates (mailing list / GitHub): every Monday — progress,
+blockers, next week's goals, PR links
+●​ Sugar Labs IRC / Matrix (#sugar): daily during working hours for quick
+questions
+●​ Pull requests: 1–2 per week, small and reviewable
+●​ Pronunciation WAV review: Weeks 2, 6, and 11
+
+Community Involvement & Commitment
+
+53
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Current Contributions 26 merged PRs in Music Blocks, 4 PRs in Speak-AI.
+
+Areas for Improvement:
+I have not been consistent in attending weekly community meetings. For a
+project this dependent on native-speaker feedback and community checkpoints,
+that needs to change. I am fully committed to active participation starting now,
+through the community bonding period and throughout the summer.
+Commitment Moving Forward I have the technical foundation in both
+codebases. What I am committing to additionally is consistent meeting
+attendance, weekly written updates, and being the person who responds to
+review comments within 24 hours.
+
+Post-GSoC
+GSoC ending does not mean I stop. I have been contributing to Music Blocks
+since December 2025 and I am still actively doing it. The same will apply here.
+
+Specifically:
+●​ The code I write needs someone to maintain it. When Kokoro releases a
+new model version, or a classroom in Kigali reports a Kinyarwanda bug, I
+will be the person who investigates it. I will know the system better than
+anyone else at that point.
+●​ CONTRIBUTING_LANGUAGES.md will make it possible for future
+contributors to add new languages. I want to review those PRs. I built the
+infrastructure they will be extending.
+●​ Languages outside this 90-hour scope — Yoruba, Amharic, Bengali — have
+active Sugar deployments. I want to continue working on those after the
+summer, either directly or by helping whoever takes them on.
+
+Sugar Labs is where I learned what open source actually means. I am not leaving
+after the summer.
+
+Conclusion
+This proposal is grounded in honesty. I identified dead code, missing language
+registrations, stale Piper registry IDs, and untested routing paths by reading the
+actual codebase. I have laid out seven risks with concrete mitigations, been
+transparent about my inconsistent meeting attendance, and acknowledged that
+indigenous language quality will be lower due to limited training data.
+
+54
+
+SugarLabs | Speak-AI Multilingual Support | GSoC’26
+
+Pronunciation quality is the top priority for this project, and every decision in
+this proposal reflects that.
+
+Thank you for considering my proposal.
+I am 100% dedicated to Sugar Labs and have no plans to
+submit a proposal to any other organization.
+
+55
+
+
