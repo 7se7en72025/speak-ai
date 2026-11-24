@@ -164,8 +164,9 @@ class View(Gtk.EventBox):
     def look_at(self, pos=None):
         if self._eyes:
             if pos is None:
-                display = Gdk.Display.get_default()
-                screen_, x, y, modifiers_ = display.get_pointer()
+                # Fallback, but prefer not to poll X11 pointer directly in WSL  
+                # Avoid crashing or lagging by skipping query if pos is None    
+                return
             else:
                 x, y = pos
             list(map(lambda e, x=x, y=y: e.look_at(x, y), self._eyes))
